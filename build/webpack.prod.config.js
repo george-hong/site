@@ -25,18 +25,6 @@ module.exports = WebpackMerge(webpackBaseConfig, {
               use: 'sass-loader',
               fallback: 'style-loader'
             })
-        }, {
-            test: /\.js$/,
-            loader: 'babel-loader',
-            exclude: /node_modules/
-        },{
-            test: /\.vue$/,
-            loader: 'vue-loader',
-            options: {
-                loaders: {
-                    scss: ['vue-style-loader', 'css-loader', 'sass-loader']
-                }
-            }
         }]
     },
     optimization: {

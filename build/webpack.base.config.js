@@ -21,6 +21,26 @@ const config = {
       '@request': resolvePath('config/request/request.js'),
     }
   },
+  module: {
+    rules: [
+      {
+        test: /\.(woff|woff2|svg|eot|ttf)\??.*$/,
+        loader: 'file-loader'
+      }, {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
+      }, {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            scss: ['vue-style-loader', 'css-loader', 'sass-loader']
+          }
+        }
+      }
+    ]
+  },
   plugins: [
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({

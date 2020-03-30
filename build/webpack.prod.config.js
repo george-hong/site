@@ -21,10 +21,7 @@ module.exports = WebpackMerge(webpackBaseConfig, {
             use: ['style-loader', 'css-loader']
         },{
             test: /\.(scss|sass)$/,
-            use: ExtractTextPlugin.extract({  //将less抽取到公共css文件中
-              use: 'sass-loader',
-              fallback: 'style-loader'
-            })
+            use: ['style-loader', 'css-loader', 'sass-loader']
         }]
     },
     optimization: {

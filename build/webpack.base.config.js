@@ -36,7 +36,8 @@ const config = {
         options: {
           loaders: {
             scss: ['vue-style-loader', 'css-loader', 'sass-loader']
-          }
+          },
+          extractCSS: true,
         }
       }
     ]

@@ -1,5 +1,12 @@
+html, body {
+  height: 100%;
+  * {
+    box-sizing: border-box;
+  }
+}
 .w {
-  width: 1000px;
+  max-width: 1000px;
+  min-width: 320px;
   margin: 0 auto;
 }
 
@@ -13,4 +20,7 @@
   content: '';
   display: block;
   clear: both;
+}
+div, p, span, a {
+  font-size: 14px;
 }

@@ -17,7 +17,7 @@ const config = {
   },
   resolve: {
     alias: {
-      '@components': resolvePath('src/components'),
+      '@libs': resolvePath('src/libs'),
       '@request': resolvePath('config/request/request.js'),
     }
   },

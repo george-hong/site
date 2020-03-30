@@ -4,8 +4,8 @@ import router from './config/router';
 import store from './config/store';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import './src/style/reset.scss';
-import './src/style/common.scss';
+import './src/common/style/reset.scss';
+import './src/common/style/common.scss';
 
 // 自动注册组件
 const autoRegisterBaseComponents = () => {

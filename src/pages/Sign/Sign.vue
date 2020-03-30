@@ -1,0 +1,95 @@
+<template>
+    <div class="w">
+        <div class="form-content">
+            <el-form
+            ref="signForm"
+            label-width="80px"
+            :model="signForm"
+            :rules="rules"
+        >
+            <el-form-item
+                label="账号"
+                prop="account"
+            >
+                <el-input v-model="signForm.account"></el-input>
+            </el-form-item>
+            <el-form-item
+                label="密码"
+                prop="password"
+            >
+                <el-input
+                    v-model="signForm.password"
+                    type="password"
+                    show-password
+                ></el-input>
+            </el-form-item>
+            <el-form-item
+                label="重复密码"
+                prop="passwordRepeat"
+            >
+                <el-input
+                    v-model="signForm.passwordRepeat"
+                    type="password"
+                    show-password
+                ></el-input>
+            </el-form-item>
+        </el-form>
+        <el-button
+            type="primary"
+            @click="sign"
+        >
+            注册
+        </el-button>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+          return {
+              signForm: {
+                  account: '',
+                  password: '',
+                  passwordRepeat: '',
+              },
+              rules: {
+                  account: [
+                        { required: true, message: '请输入账号', trigger: 'blur' },
+                        { min: 6, max: 20, message: '标题长度应在6-20之间', trigger: 'blur' },
+                  ],
+                  password: [
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                        { min: 8, max: 20, message: '密码长度应在8-20之间', trigger: 'blur' },
+                  ],
+                  passwordRepeat: [
+                        { required: true, message: '请再次输入密码', trigger: 'blur' },
+                        { validator: this.checkPasswordRepeat, trigger: 'blur' }
+                  ],
+              }
+          }
+        },
+        methods: {
+            sign() {
+                this.$refs.signForm.validate(isvalied => {
+                    if (isvalied) this.requestSign();
+                })
+            },
+            requestSign() {
+                console.log(this.signForm);
+            },
+            checkPasswordRepeat(rule, value, next) {
+                if (value !== this.signForm.password) next(new Error('两次密码输入不一致'));
+                else next();
+            }
+        }
+    }
+</script>
+
+<style scoped lang="scss">
+    .form-content {
+        padding-top: 20px;
+        max-width: 320px;
+        margin: 0 auto;
+    }
+</style>

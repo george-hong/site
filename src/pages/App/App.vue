@@ -1,8 +1,10 @@
 <template>
     <div class="root-container">
         <header-nav></header-nav>
-        <router-view></router-view>
-        <router-link to="/article/list">写作</router-link>
+        <div class="main-content">
+            <router-view></router-view>
+        </div>
+        <footer-info></footer-info>
     </div>
 </template>
 
@@ -16,8 +18,13 @@
     }
 </script>
 
-<style scoped lang="scss">
+<style scope lang="scss">
     .root-container {
-
+        height: 100%;
+        .main-content {
+            padding: 60px 0;
+            margin: -60px 0;
+            min-height: 100%;
+        }
     }
 </style>

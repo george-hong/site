@@ -1,7 +1,16 @@
 <template>
     <div class="header-nav">
-        <el-menu class="w" mode="horizontal">
-            <el-menu-item index="1">处理中心</el-menu-item>
+        <el-menu
+            class="w"
+            mode="horizontal"
+        >
+            <el-menu-item index="1">主页</el-menu-item>
+            <el-menu-item
+                index="/login"
+                class="fr"
+            >
+                <router-link to="/login">注册/登录</router-link>
+            </el-menu-item>
         </el-menu>
     </div>
 </template>

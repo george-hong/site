@@ -2,6 +2,7 @@
     <div class="root-container">
         <header-nav></header-nav>
         <router-view></router-view>
+        <router-link to="/article/list">写作</router-link>
     </div>
 </template>
 

@@ -1,7 +1,6 @@
 const webpackBaseConfig = require('./webpack.base.config');
 const WebpackMerge = require('webpack-merge');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const Uglify = require('uglifyjs-webpack-plugin');
 
 webpackBaseConfig.plugins.push(new Uglify({
@@ -18,13 +17,15 @@ module.exports = WebpackMerge(webpackBaseConfig, {
     module: {
         rules: [{
             test: /\.css$/,
-            use: ['style-loader', 'css-loader']
+            use: [MiniCssExtractPlugin.loader, 'css-loader']
         },{
             test: /\.(scss|sass)$/,
-            use: ['style-loader', 'css-loader', 'sass-loader']
+            use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
         }]
     },
-    optimization: {
-        minimizer: [new OptimizeCSSAssetsPlugin({})]
-    }
+    plugins: [
+        new MiniCssExtractPlugin({
+          filename: 'all-[hash].css'
+        })
+      ]
 });

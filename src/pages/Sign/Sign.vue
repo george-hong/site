@@ -33,6 +33,15 @@
                     show-password
                 ></el-input>
             </el-form-item>
+            <el-form-item
+                label="昵称"
+                prop="userName"
+            >
+                <el-input
+                    v-model="signForm.userName"
+                    type="text"
+                ></el-input>
+            </el-form-item>
         </el-form>
         <el-button
             type="primary"
@@ -45,6 +54,7 @@
 </template>
 
 <script>
+    import { sign as signRequest } from '@request';
     export default {
         data() {
           return {
@@ -52,11 +62,12 @@
                   account: '',
                   password: '',
                   passwordRepeat: '',
+                  userName: '',
               },
               rules: {
                   account: [
                         { required: true, message: '请输入账号', trigger: 'blur' },
-                        { min: 6, max: 20, message: '标题长度应在6-20之间', trigger: 'blur' },
+                        { min: 6, max: 20, message: '账号长度应在6-20之间', trigger: 'blur' },
                   ],
                   password: [
                         { required: true, message: '请输入密码', trigger: 'blur' },
@@ -65,6 +76,9 @@
                   passwordRepeat: [
                         { required: true, message: '请再次输入密码', trigger: 'blur' },
                         { validator: this.checkPasswordRepeat, trigger: 'blur' }
+                  ],
+                  userName: [
+                        { min: 2, max: 10, message: '昵称长度应在2-10之间', trigger: 'blur' },
                   ],
               }
           }
@@ -77,6 +91,13 @@
             },
             requestSign() {
                 console.log(this.signForm);
+                signRequest(this.signForm)
+                    .then(result => {
+                        console.log(result);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             },
             checkPasswordRepeat(rule, value, next) {
                 if (value !== this.signForm.password) next(new Error('两次密码输入不一致'));

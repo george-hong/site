@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Qs from 'qs';
 
-const serverBaseUrl = 'http://pb-api.herokuapp.com/';
+const serverBaseUrl = 'http://127.0.0.1:3000/';
 
 // 创建axios实例
 function createAxiosInstance(callback) {

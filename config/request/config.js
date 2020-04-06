@@ -21,7 +21,7 @@ function createAxiosInstance(callback) {
     request.get = function (url, data) {
         return new Promise((resolve, reject) => {
             instance.get(url, { params: data}).then(response => {
-                resolve(response.data.result);
+                resolve(response.data.data);
             }).catch(function (msg) {
                 reject(msg);
             });
@@ -31,7 +31,7 @@ function createAxiosInstance(callback) {
     request.post = function (url, data) {
         return new Promise((resolve, reject) => {
             instance.post(url, data).then(response => {
-                resolve(response);
+                resolve(response.data.data);
             }).catch(function (msg) {
                 reject(msg);
             });

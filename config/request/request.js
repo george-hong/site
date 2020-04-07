@@ -7,4 +7,7 @@ module.exports = {
     checkAccountIsRepeat(params) {
         return request.get('api/user/checkAccountIsRepeat', params);
     },
+    login(params) {
+        return request.post('api/user/login', params);
+    }
 }

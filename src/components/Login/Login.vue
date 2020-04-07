@@ -7,18 +7,22 @@
         :visible.sync="isVisible"
         :before-close="cancelLogin"
     >
-        <el-form
-            ref="loginForm"
-            label-width="60px"
-            hide-required-asterisk
-            :model="loginForm"
-            :rules="rules"
-        >
-            <el-form-item label="账号" prop="account">
-                <el-input v-model="loginForm.account"></el-input>
+        <el-form ref="loginForm"
+                 hide-required-asterisk
+                 :model="loginForm"
+                 :rules="rules">
+            <el-form-item prop="account">
+                <el-input v-model="loginForm.account"
+                          prefix-icon="el-icon-user"
+                          placeholder="请输入账号"
+                          clearable></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
-                <el-input v-model="loginForm.password"></el-input>
+            <el-form-item prop="password">
+                <el-input v-model="loginForm.password"
+                          show-password
+                          placeholder="请输入密码"
+                          prefix-icon="el-icon-lock"
+                          type="password"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="clearfix">
@@ -47,6 +51,8 @@
 </template>
 
 <script>
+    import request from '@request';
+
     const toggleLoginWidnowName = 'toggleShowLoginWindow';
     export default {
         name: 'login',
@@ -74,15 +80,46 @@
         },
         methods: {
             async login() {
+                this.isLoading = true;
                 try {
                     await this.checkLoginForm();
                     const store = this.$store;
                     const callback = store.state.loginSuccessCallback;
-                    store.commit(toggleLoginWidnowName, false);
+                    await this.requestLogin();
                     callback && callback();
+                    store.commit(toggleLoginWidnowName, false);
                 } catch (err) {
-                    console.log('登录失败');
+                    if (err) {
+                        this.$notify({
+                            title: '登录失败',
+                            message: err,
+                            duration: 3000,
+                            type: 'warning',
+                        });
+                    }
                 }
+                this.isLoading = false;
+            },
+            requestLogin() {
+                const requestParams = this.loginForm;
+                return new Promise((resolve, reject) => {
+                    request.login(requestParams)
+                        .then(result => {
+                            const { accountInfo } = result;
+                            if (accountInfo) {
+                                this.loginSuccess(accountInfo);
+                                resolve();
+                            } else reject('请检查账号密码');
+                        })
+                        .catch(err => {
+                            reject(err);
+                        });
+                });
+            },
+            loginSuccess() {
+                this.$notify.success({ title: '登录成功', message: '欢迎' });
+                console.log('login success');
+                
             },
             goToSign() {
                 const { path } = this.$route;
@@ -117,7 +154,7 @@
         min-width: 320px;
         max-width: 400px;
         .el-dialog__body {
-            padding: 0 20px 0 10px;
+            padding: 0 20px;
         }
     }
 </style>

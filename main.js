@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import App from './src/pages/App/App.vue';
 import router from './config/router';
-import store from './config/store';
+import store from './config/store/store';
+import message from './config/message/message';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './src/common/style/reset.scss';
@@ -18,6 +19,8 @@ const autoRegisterBaseComponents = () => {
 };
 
 Vue.use(ElementUI);
+// 注册全局提示信息
+Vue.prototype.message = message;
 
 autoRegisterBaseComponents();
 

@@ -52,8 +52,9 @@
 
 <script>
     import request from '@request';
+    import { stateNames, commitNames } from '@storeFields';
+    import { mapState } from 'vuex';
 
-    const toggleLoginWidnowName = 'toggleShowLoginWindow';
     export default {
         name: 'login',
         props: {
@@ -81,20 +82,30 @@
         methods: {
             async login() {
                 this.isLoading = true;
+                const successCallback = this[stateNames.loginSuccessCallback];
+                const failCallback = this[stateNames.loginFailCallback];
                 try {
                     await this.checkLoginForm();
                     const store = this.$store;
-                    const callback = store.state.loginSuccessCallback;
-                    await this.requestLogin();
-                    callback && callback();
-                    store.commit(toggleLoginWidnowName, false);
+                    const accountInfo = await this.requestLogin();
+                    // 如果有回调就执行回调，并且如果回调是Promise则在then后执行登录完成的回调
+                    if (successCallback) {
+                        const successCallbackResult = successCallback();
+                        if (successCallbackResult && successCallbackResult.then) {
+                            successCallbackResult.then(() => this.loginSuccess(accountInfo));
+                        } else {
+                            this.loginSuccess(accountInfo);
+                        }
+                    } else {
+                        this.loginSuccess(accountInfo);
+                    }
                 } catch (err) {
+                    if (failCallback) failCallback(err);
                     if (err) {
-                        this.$notify({
+                        this.message.warning({
                             title: '登录失败',
                             message: err,
                             duration: 3000,
-                            type: 'warning',
                         });
                     }
                 }
@@ -107,8 +118,7 @@
                         .then(result => {
                             const { accountInfo } = result;
                             if (accountInfo) {
-                                this.loginSuccess(accountInfo);
-                                resolve();
+                                resolve(accountInfo);
                             } else reject('请检查账号密码');
                         })
                         .catch(err => {
@@ -116,17 +126,18 @@
                         });
                 });
             },
-            loginSuccess() {
-                this.$notify.success({ title: '登录成功', message: '欢迎' });
-                console.log('login success');
-                
+            loginSuccess(accountInfo) {
+                // 登陆成功后保存用户信息
+                this.message.success({ title: '登录成功', message: '欢迎' });
+                this.$store.commit(commitNames.saveUserInfo, accountInfo);
+                this.$store.commit(commitNames.toggleShowLoginWindow, false);
             },
             goToSign() {
                 const { path } = this.$route;
                 if (path !== '/sign') {
                     this.$router.push('/sign');
                 }
-                this.$store.commit(toggleLoginWidnowName, false);
+                this.$store.commit(commitNames.toggleShowLoginWindow, false);
             },
             checkLoginForm() {
                 return new Promise((resolve, reject) => {
@@ -137,12 +148,13 @@
                 });
             },
             cancelLogin() {
-                this.$store.commit(toggleLoginWidnowName, false)
+                this.$store.commit(commitNames.toggleShowLoginWindow, false);
             }
         },
         computed: {
+            ...mapState([stateNames.userInfo, stateNames.loginSuccessCallback, stateNames.loginFailCallback]),
             isVisible() {
-                return this.visible;
+                return this.$store.state[stateNames.isShowLoginWindow];
             }
         }
     }

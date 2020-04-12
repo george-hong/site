@@ -22,6 +22,8 @@
 </template>
 
 <script>
+    import { commitNames } from '@storeFields';
+
     export default {
         name: 'header-nav',
         data() {
@@ -31,7 +33,7 @@
         },
         methods: {
             login() {
-                this.$store.commit('toggleShowLoginWindow', { visible: true, callback() { console.log('login ok'); } });
+                this.$store.commit(commitNames.toggleShowLoginWindow, { visible: true, onSuccess() { console.log('login ok'); }, onFail() { console.log('login fail') } });
             }
         },
         mounted() {

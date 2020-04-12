@@ -1,7 +1,8 @@
 import axios from 'axios';
 import Qs from 'qs';
 
-const serverBaseUrl = 'http://127.0.0.1:3000/';
+const serverBaseUrl = 'http://127.0.0.1:3000/'; // 接口请求地址
+const timeout = 300000;                         // 接口超时时间
 
 // 创建axios实例
 function createAxiosInstance(callback) {

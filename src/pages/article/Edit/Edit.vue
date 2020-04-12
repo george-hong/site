@@ -76,11 +76,10 @@
         },
         methods: {
             showNotice(message, title) {
-                this.$notify({
+                this.message.warning({
                     title: title || '表单验证未通过',
                     message: message || '请重新检查',
                     duration: 3000,
-                    type: 'warning',
                 });
             },
             releaseArticle(isValied) {

@@ -2,19 +2,27 @@
     <div class="root-container">
         <header-nav></header-nav>
         <div class="main-content">
-            <router-view></router-view>
+            <router-view v-if="!isHomePage"></router-view>
+            <home-page v-if="isHomePage"></home-page>
         </div>
         <footer-info></footer-info>
     </div>
 </template>
 
 <script>
+
     export default {
         data() {
           return {
 
           }
         },
+        computed: {
+            isHomePage() {
+                const { path } = this.$route;
+                return path === '/';
+            }
+        }
     }
 </script>
 

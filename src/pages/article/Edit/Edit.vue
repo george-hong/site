@@ -53,6 +53,8 @@
 
 <script>
     import { mavonEditor } from "mavon-editor";
+    import { mapState } from 'vuex';
+    import request from '@request';
     import "mavon-editor/dist/css/index.css";
     export default {
         components: {
@@ -75,23 +77,37 @@
             }
         },
         methods: {
-            showNotice(message, title) {
-                this.message.warning({
-                    title: title || '表单验证未通过',
-                    message: message || '请重新检查',
-                    duration: 3000,
-                });
-            },
             releaseArticle(isValied) {
                 this.$refs.form.validate(isValied => {
-                    if (!isValied) return this.showNotice();
-                    if (!this.content) return this.showNotice('文章内容不能为空');
-                    console.log('ok');
+                    const tipTitle = '表单验证未通过';
+                    const { userInfo, content } = this; 
+                    if (!isValied) return this.message.warning({ title: tipTitle, message: '请重新检查' });
+                    if (!content) return this.message.warning({ title: tipTitle, message: '文章内容不能为空' });
+                    if (!userInfo) return this.message.warning({ title: '请先登录', message: '登录后才能发表文章' });
+                    const requestParams = {
+                        title: this.form.title,
+                        content: this.content,
+                        author: userInfo.userName,
+                        authorId: userInfo.userId,
+                    };
+                    this.isLoading = true;
+                    request.editArticle(requestParams)
+                        .then(result => {
+                            console.log(result);
+                            
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            
+                        })
                 });
             }
         },
         mounted() {
 
+        },
+        computed: {
+            ...mapState(['userInfo'])
         }
     }
 </script>

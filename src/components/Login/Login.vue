@@ -87,17 +87,17 @@
                 try {
                     await this.checkLoginForm();
                     const store = this.$store;
-                    const accountInfo = await this.requestLogin();
+                    const loginInfo = await this.requestLogin();
                     // 如果有回调就执行回调，并且如果回调是Promise则在then后执行登录完成的回调
                     if (successCallback) {
                         const successCallbackResult = successCallback();
                         if (successCallbackResult && successCallbackResult.then) {
-                            successCallbackResult.then(() => this.loginSuccess(accountInfo));
+                            successCallbackResult.then(() => this.loginSuccess(loginInfo));
                         } else {
-                            this.loginSuccess(accountInfo);
+                            this.loginSuccess(loginInfo);
                         }
                     } else {
-                        this.loginSuccess(accountInfo);
+                        this.loginSuccess(loginInfo);
                     }
                 } catch (err) {
                     if (failCallback) failCallback(err);
@@ -116,9 +116,14 @@
                 return new Promise((resolve, reject) => {
                     request.login(requestParams)
                         .then(result => {
-                            const { accountInfo } = result;
+                            const { accountInfo, token } = result;
+                            // 返回账号信息表明登录成功
                             if (accountInfo) {
-                                resolve(accountInfo);
+                                const loginInfo = {
+                                    accountInfo,
+                                    token,
+                                };
+                                resolve(loginInfo);
                             } else reject('请检查账号密码');
                         })
                         .catch(err => {
@@ -126,11 +131,14 @@
                         });
                 });
             },
-            loginSuccess(accountInfo) {
+            loginSuccess(loginInfo) {
+                const { accountInfo, token } = loginInfo;
                 // 登陆成功后保存用户信息
                 this.message.success({ title: '登录成功', message: '欢迎' });
                 this.$store.commit(commitNames.saveUserInfo, accountInfo);
                 this.$store.commit(commitNames.toggleShowLoginWindow, false);
+                localStorage.setItem('userInfo', JSON.stringify(accountInfo));
+                localStorage.setItem('token', token);
             },
             goToSign() {
                 const { path } = this.$route;

@@ -1,8 +1,9 @@
 import axios from 'axios';
 import Qs from 'qs';
+import message from '../message/message';
 
 const serverBaseUrl = 'http://127.0.0.1:3000/'; // 接口请求地址
-const timeout = 300000;                         // 接口超时时间
+const timeout = 150000;                         // 接口超时时间
 
 // 创建axios实例
 function createAxiosInstance(callback) {
@@ -15,6 +16,27 @@ function createAxiosInstance(callback) {
             data = Qs.stringify(data);
             return data;
         }]
+    });
+
+    // 配置请求拦截器
+    instance.interceptors.request.use(config => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.token = token;
+        }
+        return config;
+    });
+
+    // 配置响应拦截器
+    instance.interceptors.response.use(response => {
+        const { status, errDetail } = response.data;
+        if (status !== 200) {
+            message.error({
+                title: '请求异常',
+                message: errDetail,
+            });
+        }
+        return response;
     });
 
     callback && callback(instance);

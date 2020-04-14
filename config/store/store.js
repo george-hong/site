@@ -25,8 +25,6 @@ const store = new Vuex.Store({
       } else {
         isShowLoginWindow = payload;
       }
-      console.log('toggleShow', isShowLoginWindow);
-      
       state.isShowLoginWindow = !!isShowLoginWindow;
     },
     [commitNames.saveUserInfo](state, payload) {

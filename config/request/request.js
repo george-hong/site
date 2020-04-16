@@ -19,5 +19,8 @@ module.exports = {
     // 新增文章
     editArticle(params) {
         return request.post('api/article/edit', params);
-    }
+    },
+    queryArticle(params) {
+        return request.get('api/article/detail', params);
+    },
 }

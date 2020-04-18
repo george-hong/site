@@ -20,7 +20,12 @@ module.exports = {
     editArticle(params) {
         return request.post('api/article/edit', params);
     },
+    // 文章详情
     queryArticle(params) {
         return request.get('api/article/detail', params);
+    },
+    // 文章列表
+    getArticleList(params) {
+        return request.get('api/article/list', params);
     },
 }

@@ -8,10 +8,15 @@ const isObject = (value) => {
 
 const isFunction = (value) => {
   return getPrototype(value) === 'Function';
-}
+};
+
+const isNumber = (value) => {
+  return getPrototype(value) === 'Number';
+};
 
 module.exports = {
   ObjectToString,
   isObject,
   isFunction,
+  isNumber,
 };

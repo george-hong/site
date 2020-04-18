@@ -36,6 +36,7 @@
 <script>
     import { commitNames } from '@storeFields';
     import { mapState } from 'vuex';
+    import storageNameSpace from '@nameSpace/storageNameSpace';
 
     export default {
         name: 'header-nav',
@@ -49,20 +50,33 @@
                 const instance = this;
                 this.$store.commit(commitNames.toggleShowLoginWindow, {
                     visible: true,
-                    onSuccess() { instance.checkUserInfo(); },
+                    onSuccess() { instance.tryGetUserInfoFromLocalStorage(); },
                     onFail() { console.log('login fail') } 
                 });
             },
             loginout() {
-                localStorage.removeItem('userInfo');
-                localStorage.removeItem('token');
+                localStorage.removeItem(storageNameSpace.userInfo);
+                localStorage.removeItem(storageNameSpace.tokenInfo);
                 this.$store.commit(commitNames.saveUserInfo, null);
             },
             goRouter(path) {
-                this.$router.push(path);
+                console.log(this.$route.path);
+                const { path: currentPath } = this.$route;
+                // 只有路径改变时才跳转
+                if (currentPath !== path) {
+                    this.$router.push(path);
+                }
             },
-            checkUserInfo() {
-                const localUserInfo = localStorage.getItem('userInfo');
+            tryGetUserInfoFromLocalStorage() {
+                const localUserInfo = localStorage.getItem(storageNameSpace.userInfo);
+                const tokenExpiresTime = parseInt(localStorage.getItem(storageNameSpace.tokenExpiresTime));
+                // 如果token已过期，删除用户信息
+                if (tokenExpiresTime < Date.now()) {
+                    localStorage.removeItem(storageNameSpace.userInfo);
+                    localStorage.removeItem(storageNameSpace.token);
+                    localStorage.removeItem(storageNameSpace.tokenExpiresTime);
+                    return; //
+                }
                 try {
                     const userInfo = JSON.parse(localUserInfo);
                     this.$store.commit(commitNames.saveUserInfo, userInfo);
@@ -72,7 +86,7 @@
             }
         },
         mounted() {
-            this.checkUserInfo();
+            this.tryGetUserInfoFromLocalStorage();
         },
         computed: {
             isShowLoginWindow() {

@@ -2,6 +2,7 @@
   <div class="w home-page">
     <el-button @click="getInfo">测试接口</el-button>
     <router-link to="/article/edit">写文章</router-link>
+    <router-link to="/system/dictionaryManage">字典</router-link>
   </div>
 </template>
 

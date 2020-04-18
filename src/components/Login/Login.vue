@@ -53,6 +53,7 @@
 <script>
     import request from '@request';
     import { stateNames, commitNames } from '@storeFields';
+    import storageNameSpace from '@nameSpace/storageNameSpace';
     import { mapState } from 'vuex';
 
     export default {
@@ -88,6 +89,9 @@
                     await this.checkLoginForm();
                     const store = this.$store;
                     const loginInfo = await this.requestLogin();
+                    console.log('loginInfo1111');
+                    console.log(loginInfo);
+                    
                     // 如果有回调就执行回调，并且如果回调是Promise则在then后执行登录完成的回调
                     if (successCallback) {
                         const successCallbackResult = successCallback();
@@ -133,12 +137,15 @@
             },
             loginSuccess(loginInfo) {
                 const { accountInfo, token } = loginInfo;
-                // 登陆成功后保存用户信息
+                const { tokenValue, expiresTime } = token;
+
+                // 登陆成功后保存用户信息,保存token和token过期时间
                 this.message.success({ title: '登录成功', message: '欢迎' });
                 this.$store.commit(commitNames.saveUserInfo, accountInfo);
                 this.$store.commit(commitNames.toggleShowLoginWindow, false);
-                localStorage.setItem('userInfo', JSON.stringify(accountInfo));
-                localStorage.setItem('token', token);
+                localStorage.setItem(storageNameSpace.userInfo, JSON.stringify(accountInfo));
+                localStorage.setItem(storageNameSpace.token, tokenValue);
+                localStorage.setItem(storageNameSpace.tokenExpiresTime, expiresTime); // 过期时间仅用于判断头部是否显示用户信息
             },
             goToSign() {
                 const { path } = this.$route;

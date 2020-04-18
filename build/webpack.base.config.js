@@ -21,6 +21,7 @@ const config = {
       '@request': resolvePath('config/request/request.js'),
       '@storeFields': resolvePath('config/store/storeFields.js'),
       '@utilMethods': resolvePath('libs/utilMethods.js'),
+      '@nameSpace': resolvePath('config/nameSpace'),
     }
   },
   module: {

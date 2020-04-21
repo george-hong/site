@@ -62,6 +62,8 @@
         },
         data() {
             return {
+                isSubmitting: false, // 是否正在提交
+                isSubmitted: false,  // 是否提交完成
                 content: '',
                 form: {
                     title: '',
@@ -79,6 +81,8 @@
         methods: {
             releaseArticle(isValied) {
                 this.$refs.form.validate(isValied => {
+                    if (this.isSubmitting || this.isSubmitted) return;
+                    this.isSubmitting = true;
                     const tipTitle = '表单验证未通过';
                     const { userInfo, content } = this; 
                     if (!isValied) return this.message.warning({ title: tipTitle, message: '请重新检查' });
@@ -94,12 +98,25 @@
                     request.editArticle(requestParams)
                         .then(result => {
                             console.log(result);
-                            
+                            this.isSubmitted = true;
+                            this.onSubmitSuccess(result);
                         })
                         .catch(err => {
                             console.log(err);
                             
                         })
+                        .finally(() => {
+                            this.isSubmitting = false;
+                        })
+                });
+            },
+            onSubmitSuccess(result) {
+                // 成功后给出提示并跳转到详情页
+                const { id } = result;
+                this.message.success({ title: '上传成功' });
+                this.$router.push({
+                    name: 'articleDetail',
+                    params: { id },
                 });
             }
         },

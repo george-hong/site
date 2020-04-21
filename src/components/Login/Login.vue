@@ -4,7 +4,7 @@
         custom-class="login-dialog"
         destroy-on-close
         :show-close="false"
-        :visible.sync="isVisible"
+        :visible.sync="isShowLoginWindow"
         :before-close="cancelLogin"
     >
         <el-form ref="loginForm"
@@ -22,7 +22,8 @@
                           show-password
                           placeholder="请输入密码"
                           prefix-icon="el-icon-lock"
-                          type="password"></el-input>
+                          type="password"
+                          @keyup.enter.native="login"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="clearfix">
@@ -168,7 +169,7 @@
         },
         computed: {
             ...mapState([stateNames.userInfo, stateNames.loginSuccessCallback, stateNames.loginFailCallback]),
-            isVisible() {
+            isShowLoginWindow() {
                 return this.$store.state[stateNames.isShowLoginWindow];
             }
         }

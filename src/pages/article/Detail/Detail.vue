@@ -2,8 +2,11 @@
     <div class="w article-detail">
         <p>{{articleDetail.title}}</p>
         <mavon-editor v-model="articleDetail.content"
-                      :toolbars="editorTools"
+                      :toolbarsFlag="false"
                       :subfield="false"
+                      :boxShadow="false"
+                      :shortCut="false"
+                      previewBackground="#FFF"
                       defaultOpen="preview"></mavon-editor>
     </div>
 </template>
@@ -20,7 +23,6 @@
         data() {
             return {
                 pageState: '',
-                editorTools: {},
                 articleDetail: {
                     title: '',
                     content: '',
@@ -55,6 +57,12 @@
         }
         /deep/ .v-note-op {
             display: none;
+        }
+        /deep/ .v-note-wrapper .v-note-panel .v-note-show .v-show-content {
+            padding: 0;
+        }
+        /deep/ .v-note-wrapper {
+            border: none;
         }
     }
 </style>

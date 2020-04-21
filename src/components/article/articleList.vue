@@ -7,9 +7,9 @@
         <li v-for="article in articleList"
             :key="article.id">
           <div class="top">
-            <p class="one-line-text"
+            <p class="one-line-text title"
                @click="viewArticleDetail(article)">{{article.title}}</p>
-            <span>{{article.updateTime}}</span>
+            <span>{{article.updateTime | dayTime}}</span>
           </div>
           <div class="bottom">
             <span>{{article.author}}</span>
@@ -58,7 +58,8 @@
       async getArticleList(page) {
         this.isLoading = true;
         try {
-          this.articleList = this.articleList.concat(await this.requestGetArticleList(page));
+          const listInfo = await this.requestGetArticleList(page);
+          this.articleList = this.articleList.concat(listInfo.data);
           this.currentPage += 1;
         } catch (err) {
           console.log(err);
@@ -97,9 +98,12 @@
     .list-wrapper {
       > li {
         padding: 15px 0;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid rgba(0, 0, 0, .05);
         .top {
           display: flex;
+          .title {
+            cursor: pointer;
+          }
           p {
             flex: 1;
           }

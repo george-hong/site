@@ -18,11 +18,22 @@ const autoRegisterBaseComponents = () => {
   });
 };
 
+// 自动注册组件
+const autoRegisterBaseFilters = () => {
+  const requireComponent = require.context('./src/filters', true, /\.js$/);
+  requireComponent.keys().forEach(componentPath => {
+    const componentConfig = requireComponent(componentPath);
+    const controller = componentConfig.default || componentConfig;
+    Vue.filter(controller.name, controller.filter);
+  });
+};
+
 Vue.use(ElementUI);
 // 注册全局提示信息
 Vue.prototype.message = message;
 
 autoRegisterBaseComponents();
+autoRegisterBaseFilters();
 
 new Vue({
   el: '#app',

@@ -53,7 +53,7 @@
 
 <script>
     import request from '@request';
-    import { stateNames, commitNames } from '@storeFields';
+    import { stateNameSpace, commitNameSpace } from '@nameSpace/storeNameSpace';
     import storageNameSpace from '@nameSpace/storageNameSpace';
     import { mapState } from 'vuex';
 
@@ -84,8 +84,8 @@
         methods: {
             async login() {
                 this.isLoading = true;
-                const successCallback = this[stateNames.loginSuccessCallback];
-                const failCallback = this[stateNames.loginFailCallback];
+                const successCallback = this[stateNameSpace.loginSuccessCallback];
+                const failCallback = this[stateNameSpace.loginFailCallback];
                 try {
                     await this.checkLoginForm();
                     const store = this.$store;
@@ -142,8 +142,8 @@
 
                 // 登陆成功后保存用户信息,保存token和token过期时间
                 this.message.success({ title: '登录成功', message: '欢迎' });
-                this.$store.commit(commitNames.saveUserInfo, accountInfo);
-                this.$store.commit(commitNames.toggleShowLoginWindow, false);
+                this.$store.commit(commitNameSpace.saveUserInfo, accountInfo);
+                this.$store.commit(commitNameSpace.toggleShowLoginWindow, false);
                 localStorage.setItem(storageNameSpace.userInfo, JSON.stringify(accountInfo));
                 localStorage.setItem(storageNameSpace.token, tokenValue);
                 localStorage.setItem(storageNameSpace.tokenExpiresTime, expiresTime); // 过期时间仅用于判断头部是否显示用户信息
@@ -153,7 +153,7 @@
                 if (path !== '/sign') {
                     this.$router.push('/sign');
                 }
-                this.$store.commit(commitNames.toggleShowLoginWindow, false);
+                this.$store.commit(commitNameSpace.toggleShowLoginWindow, false);
             },
             checkLoginForm() {
                 return new Promise((resolve, reject) => {
@@ -164,13 +164,13 @@
                 });
             },
             cancelLogin() {
-                this.$store.commit(commitNames.toggleShowLoginWindow, false);
+                this.$store.commit(commitNameSpace.toggleShowLoginWindow, false);
             }
         },
         computed: {
-            ...mapState([stateNames.userInfo, stateNames.loginSuccessCallback, stateNames.loginFailCallback]),
+            ...mapState([stateNameSpace.userInfo, stateNameSpace.loginSuccessCallback, stateNameSpace.loginFailCallback]),
             isShowLoginWindow() {
-                return this.$store.state[stateNames.isShowLoginWindow];
+                return this.$store.state[stateNameSpace.isShowLoginWindow];
             }
         }
     }

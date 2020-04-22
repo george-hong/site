@@ -1,40 +1,42 @@
 <template>
-    <div class="header-nav">
-        <el-menu
-            class="w"
-            mode="horizontal"
-        >
-            <el-menu-item
-                index="/"
-                @click="goRouter('/')"
+    <div class="head-nav-box">
+        <div class="header-nav">
+            <el-menu
+                class="w"
+                mode="horizontal"
             >
-                主页
-            </el-menu-item>
-            <el-menu-item
-                index="/login"
-                class="fr"
-            >
-                <el-button
-                    v-if="!userInfo"
-                    type="text"
-                    @click="login"
+                <el-menu-item
+                    index="/"
+                    @click="goRouter('/')"
                 >
-                    注册/登录
-                </el-button>
-                <span
-                    v-else
-                    @click="loginout"
+                    主页
+                </el-menu-item>
+                <el-menu-item
+                    index="/login"
+                    class="fr"
                 >
-                    {{userInfo.userName}}
-                </span>
-                <login :visible="isShowLoginWindow"></login>
-            </el-menu-item>
-        </el-menu>
+                    <el-button
+                        v-if="!userInfo"
+                        type="text"
+                        @click="login"
+                    >
+                        注册/登录
+                    </el-button>
+                    <span
+                        v-else
+                        @click="loginout"
+                    >
+                        {{userInfo.userName}}
+                    </span>
+                </el-menu-item>
+            </el-menu>
+        </div>
+        <login :visible="isShowLoginWindow"></login>
     </div>
 </template>
 
 <script>
-    import { commitNames } from '@storeFields';
+    import { commitNameSpace } from '@nameSpace/storeNameSpace';
     import { mapState } from 'vuex';
     import storageNameSpace from '@nameSpace/storageNameSpace';
 
@@ -48,7 +50,7 @@
         methods: {
             login() {
                 const instance = this;
-                this.$store.commit(commitNames.toggleShowLoginWindow, {
+                this.$store.commit(commitNameSpace.toggleShowLoginWindow, {
                     visible: true,
                     onSuccess() { instance.tryGetUserInfoFromLocalStorage(); },
                     onFail() { console.log('login fail') } 
@@ -57,7 +59,7 @@
             loginout() {
                 localStorage.removeItem(storageNameSpace.userInfo);
                 localStorage.removeItem(storageNameSpace.tokenInfo);
-                this.$store.commit(commitNames.saveUserInfo, null);
+                this.$store.commit(commitNameSpace.saveUserInfo, null);
             },
             goRouter(path) {
                 console.log(this.$route.path);
@@ -79,7 +81,7 @@
                 }
                 try {
                     const userInfo = JSON.parse(localUserInfo);
-                    this.$store.commit(commitNames.saveUserInfo, userInfo);
+                    this.$store.commit(commitNameSpace.saveUserInfo, userInfo);
                 } catch (err) {
                     // 读取本地用户信息异常,不进行操作
                 };
@@ -99,11 +101,20 @@
 
 <style lang="scss" scoped>
     .header-nav {
+        width: 100%;
         height: 60px;
         border-bottom: 1px solid #e6e6e6;
         overflow: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: #FFF;
+        z-index: 9;
         .el-menu--horizontal {
             border-bottom: 0;
+        }
+        .w {
+            padding: 0;
         }
     }
 </style>

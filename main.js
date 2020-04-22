@@ -4,6 +4,7 @@ import router from './config/router';
 import store from './config/store/store';
 import message from './config/message/message';
 import ElementUI from 'element-ui';
+import { commitNameSpace, stateNameSpace } from '@nameSpace/storeNameSpace';
 import 'element-ui/lib/theme-chalk/index.css';
 import './src/common/style/reset.scss';
 import './src/common/style/common.scss';
@@ -31,6 +32,10 @@ const autoRegisterBaseFilters = () => {
 Vue.use(ElementUI);
 // 注册全局提示信息
 Vue.prototype.message = message;
+Vue.prototype.getGlobalId = () => {
+  store.commit(commitNameSpace.updateGlobalId);
+  return store.state[stateNameSpace.globalId];
+};
 
 autoRegisterBaseComponents();
 autoRegisterBaseFilters();

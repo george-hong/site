@@ -1,16 +1,23 @@
-const stateNames = {
+const stateNameSpace = {
   isShowLoginWindow: 'isShowLoginWindow',
   userInfo: 'userInfo',
   loginSuccessCallback: 'loginSuccessCallback',
   loginFailCallback: 'loginFailCallback',
+  globalId: 'globalId',                           // 全局唯一id计数器
 };
 
-const commitNames = {
+const commitNameSpace = {
   toggleShowLoginWindow: 'toggleShowLoginWindow',
   saveUserInfo: 'saveUserInfo',
+  updateGlobalId: 'updateGlobalId',
+};
+
+const getterNameSpace = {
+
 };
 
 module.exports = {
-  stateNames,
-  commitNames,
+  stateNameSpace,
+  getterNameSpace,
+  commitNameSpace,
 }

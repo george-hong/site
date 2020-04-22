@@ -30,8 +30,8 @@
     .root-container {
         height: 100%;
         .main-content {
-            padding: 60px 0;
-            margin: -60px 0;
+            padding: 60px 0 60px;
+            margin-bottom: -60px;
             min-height: 100%;
         }
     }

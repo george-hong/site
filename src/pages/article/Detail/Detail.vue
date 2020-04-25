@@ -63,6 +63,7 @@
         }
         /deep/ .v-note-wrapper {
             border: none;
+            z-index: 8;
         }
     }
 </style>

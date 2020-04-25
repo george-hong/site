@@ -14,9 +14,13 @@
         </li>
     </ul>
     <p v-if="isLoading"
-       class="is-bottom">-- 正在加载 --</p>
+       class="is-bottom">
+      <i class="el-icon-loading"></i>加载中...
+    </p>
     <p v-if="isNoMore && !once"
-       class="is-bottom">-- 我也是有底线的 --</p>
+       class="is-bottom">
+      <i class="el-icon-receiving"></i>已经到底啦！
+    </p>
   </div>
 </template>
 
@@ -190,6 +194,9 @@
     .is-bottom {
       padding: 20px 0;
       text-align: center;
+      i {
+        margin-right: 10px;
+      }
     }
   }
 </style>

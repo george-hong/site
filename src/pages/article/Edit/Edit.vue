@@ -9,32 +9,6 @@
             <el-form-item label="文章标题" prop="title">
                 <el-input v-model="form.title"></el-input>
             </el-form-item>
-            <el-row :gutter="10">
-                <el-col :xs="24" :sm="12">
-                    <el-form-item label="发布时间">
-                        <el-date-picker
-                            v-model="form.createTime"
-                            type="datetime"
-                            placeholder="选择发布时间"
-                            style="width: 100%"
-                            disabled
-                        >
-                        </el-date-picker>
-                    </el-form-item>
-                </el-col>
-                <el-col :xs="24" :sm="12">
-                    <el-form-item label="更新时间">
-                        <el-date-picker
-                            v-model="form.updateTime"
-                            type="datetime"
-                            placeholder="选择更新时间"
-                            style="width: 100%"
-                            disabled
-                        >
-                        </el-date-picker>
-                    </el-form-item>
-                </el-col>
-            </el-row>
         </el-form>
         <p class="content-title">文章内容</p>
         <mavon-editor
@@ -67,8 +41,6 @@
                 content: '',
                 form: {
                     title: '',
-                    createTime: new Date(),
-                    updateTime: new Date(),
                 },
                 rules: {
                     title: [
@@ -82,12 +54,12 @@
             releaseArticle(isValied) {
                 this.$refs.form.validate(isValied => {
                     if (this.isSubmitting || this.isSubmitted) return;
-                    this.isSubmitting = true;
                     const tipTitle = '表单验证未通过';
                     const { userInfo, content } = this; 
                     if (!isValied) return this.message.warning({ title: tipTitle, message: '请重新检查' });
                     if (!content) return this.message.warning({ title: tipTitle, message: '文章内容不能为空' });
                     if (!userInfo) return this.message.warning({ title: '请先登录', message: '登录后才能发表文章' });
+                    this.isSubmitting = true;
                     const requestParams = {
                         title: this.form.title,
                         content: this.content,
@@ -139,6 +111,10 @@
         .markdown-body {
             min-height: 600px;
             margin-bottom: 20px;
+        }
+        /deep/ .v-note-wrapper {
+            border: none;
+            z-index: 8;
         }
     }
 </style>

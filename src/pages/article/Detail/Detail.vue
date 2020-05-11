@@ -1,6 +1,11 @@
 <template>
     <div class="w article-detail">
-        <p>{{articleDetail.title}}</p>
+        <h2 class="article-title">{{articleDetail.title}}</h2>
+        <p>
+            <span>{{articleDetail.author}}</span>
+            <span>发布于:</span>
+            <span>{{articleDetail.createTimeString}}</span>
+        </p>
         <mavon-editor v-model="articleDetail.content"
                       :toolbarsFlag="false"
                       :subfield="false"
@@ -13,6 +18,8 @@
 
 <script>
     import request from '@request';
+    import format from '@format';
+    import moment from 'moment';
     import { mavonEditor } from "mavon-editor";
     import "mavon-editor/dist/css/index.css";
 
@@ -26,6 +33,8 @@
                 articleDetail: {
                     title: '',
                     content: '',
+                    author: '',
+                    createTimeString: '',
                 }
             };
         },
@@ -37,6 +46,11 @@
                 };
                 request.queryArticle(requestParams)
                     .then(result => {
+                        // 更新时间格式
+                        const { createTime } = result;
+                        if (createTime) {
+                            result.createTimeString = moment(createTime).format(format.dateTimeFormat);
+                        }
                         Object.assign(this.articleDetail, result)
                     })
                     .catch(err => {
@@ -52,7 +66,7 @@
 
 <style lang="scss" scoped>
     .article-detail {
-        p {
+        .article-title, p {
             margin-bottom: 20px;
         }
         /deep/ .v-note-op {

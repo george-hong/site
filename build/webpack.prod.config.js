@@ -20,7 +20,17 @@ module.exports = WebpackMerge(webpackBaseConfig, {
             use: [MiniCssExtractPlugin.loader, 'css-loader']
         },{
             test: /\.(scss|sass)$/,
-            use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+            use: [
+                MiniCssExtractPlugin.loader,
+                'css-loader',
+                'sass-loader',
+                {
+                    loader: 'sass-resources-loader',      // 此插件为scss提供全局配置
+                    options: {
+                        resources: ['src/common/scss/globalVariable.scss']
+                    },
+                }
+            ]
         }]
     },
     plugins: [

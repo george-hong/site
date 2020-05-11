@@ -1,53 +1,82 @@
 <template>
     <div class="head-nav-box">
         <div class="header-nav">
-            <el-menu
-                class="w"
-                mode="horizontal"
-            >
-                <el-menu-item
-                    index="/"
-                    @click="goRouter('/')"
-                >
-                    主页
-                </el-menu-item>
-                <el-menu-item
+            <ul class="w menu-list">
+                <li>
+                    <router-link to="/">主页</router-link>
+                </li>
+                <li
                     index="/login"
                     class="fr"
                 >
+                    <div :class="['search-area', 'background-gray', isSearchAreaActive ? 'active' : '']">
+                        <input
+                            @focus="focusSearchArea"
+                            @blur="blurSearchArea"
+                            @keyup.enter="onSearch"
+                            v-model="searchValue"
+                            type="text"
+                            placeholder="搜索文章"
+                        />
+                        <i
+                            class="el-icon-search"
+                            @click="onSearch"
+                        />
+                    </div>
+                    <el-button
+                      v-if="!userInfo"
+                      type="text"
+                      @click="goSign"
+                    >
+                        注册
+                    </el-button>
                     <el-button
                         v-if="!userInfo"
                         type="text"
                         @click="login"
                     >
-                        注册/登录
+                        登录
                     </el-button>
                     <span
                         v-else
-                        @click="loginout"
+                        @click="logout"
                     >
                         {{userInfo.userName}}
                     </span>
-                </el-menu-item>
-            </el-menu>
+                </li>
+            </ul>
         </div>
         <login :visible="isShowLoginWindow"></login>
     </div>
 </template>
 
 <script>
-    import { commitNameSpace } from '@nameSpace/storeNameSpace';
     import { mapState } from 'vuex';
+    import { commitNameSpace } from '@nameSpace/storeNameSpace';
     import storageNameSpace from '@nameSpace/storageNameSpace';
 
     export default {
         name: 'header-nav',
         data() {
             return {
-
+                searchValue: '',
+                isSearchAreaActive: false,
             }
         },
         methods: {
+            // 搜索框获取焦点
+            focusSearchArea() {
+                this.isSearchAreaActive = true;
+            },
+            // 搜索框失去焦点
+            blurSearchArea() {
+                this.isSearchAreaActive = false;
+            },
+            // 跳转登录页
+            goSign() {
+                this.$router.push('/sign');
+            },
+            // 登录
             login() {
                 const instance = this;
                 this.$store.commit(commitNameSpace.toggleShowLoginWindow, {
@@ -56,19 +85,19 @@
                     onFail() { console.log('login fail') } 
                 });
             },
-            loginout() {
+            // 登出
+            logout() {
                 localStorage.removeItem(storageNameSpace.userInfo);
                 localStorage.removeItem(storageNameSpace.tokenInfo);
                 this.$store.commit(commitNameSpace.saveUserInfo, null);
             },
-            goRouter(path) {
-                console.log(this.$route.path);
-                const { path: currentPath } = this.$route;
-                // 只有路径改变时才跳转
-                if (currentPath !== path) {
-                    this.$router.push(path);
-                }
-            },
+            // goRouter(path) {
+            //     const { path: currentPath } = this.$route;
+            //     // 只有路径改变时才跳转
+            //     if (currentPath !== path) {
+            //         this.$router.push(path);
+            //     }
+            // },
             tryGetUserInfoFromLocalStorage() {
                 const localUserInfo = localStorage.getItem(storageNameSpace.userInfo);
                 const tokenExpiresTime = parseInt(localStorage.getItem(storageNameSpace.tokenExpiresTime));
@@ -85,6 +114,13 @@
                 } catch (err) {
                     // 读取本地用户信息异常,不进行操作
                 };
+            },
+            // 搜索框搜索
+            onSearch() {
+                // 仅当有值才执行搜索操作
+                if (this.searchValue) {
+                    console.log('search', this.searchValue);
+                }
             }
         },
         mounted() {
@@ -110,11 +146,52 @@
         left: 0;
         background: #FFF;
         z-index: 9;
-        .el-menu--horizontal {
-            border-bottom: 0;
+        .menu-list {
+            height: 100%;
+            li {
+                float: left;
+                line-height: 60px;
+                padding: 0 10px;
+                &:last-child {
+                    display: flex;
+                    align-items: center;
+                }
+            }
         }
         .w {
             padding: 0;
+        }
+        .search-area {
+            display: flex;
+            width: 200px;
+            height: 32px;
+            padding: 0 10px;
+            border-radius: 16px;
+            border: 1px solid #e6e6e6;
+            transition: .3s border-color;
+            margin-right: 15px;
+            &.active {
+                border-color: $main-color;
+            }
+            > input, i {
+                line-height: 30px;
+            }
+            input {
+                border: none;
+                outline: none;
+                background: none;
+                width: 160px;
+                padding-left: 10px;
+            }
+            i {
+                display: inline-block;
+                cursor: pointer;
+                flex: 1;
+                text-align: center;
+                &:hover {
+                    color: $main-color;
+                }
+            }
         }
     }
 </style>

@@ -38,7 +38,17 @@ const config = {
         loader: 'vue-loader',
         options: {
           loaders: {
-            scss: ['vue-style-loader', 'css-loader', 'sass-loader']
+            scss: [
+              'vue-style-loader',
+              'css-loader',
+              'sass-loader',
+              {
+                loader: 'sass-resources-loader',      // 此插件为scss提供全局配置
+                options: {
+                  resources: ['src/common/scss/globalVariable.scss']
+                },
+              }
+            ]
           },
           extractCSS: true,
         }

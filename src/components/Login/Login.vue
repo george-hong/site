@@ -32,7 +32,7 @@
                 type="text"
                 @click="goToSign"
             >
-                没有账号?
+                注册账号
             </el-button>
             <el-button
                 class="fr"
@@ -88,10 +88,7 @@
                 const failCallback = this[stateNameSpace.loginFailCallback];
                 try {
                     await this.checkLoginForm();
-                    const store = this.$store;
                     const loginInfo = await this.requestLogin();
-                    console.log('loginInfo1111');
-                    console.log(loginInfo);
                     
                     // 如果有回调就执行回调，并且如果回调是Promise则在then后执行登录完成的回调
                     if (successCallback) {
@@ -178,9 +175,7 @@
 
 <style lang="scss">
     .login-dialog {
-        width: 40%;
-        min-width: 320px;
-        max-width: 400px;
+        width: 320px;
         .el-dialog__body {
             padding: 0 20px;
         }

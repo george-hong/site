@@ -39,12 +39,14 @@
                 </el-button>
             </div>
         </div>
-        <el-dialog title="注册成功"
+        <el-dialog title="恭喜"
                    :visible.sync="isShowDialog"
-                   width="300">
-            <span slot="footer">
-                <el-button type="primary" @click="goToHomePage">确 定</el-button>
-            </span>
+                   :show-close="false"
+                   width="300px">
+            <p>注册成功</p>
+            <template slot="footer">
+                <el-button type="primary" @click="goToHomePage">去首页</el-button>
+            </template>
         </el-dialog>
     </div>
 </template>

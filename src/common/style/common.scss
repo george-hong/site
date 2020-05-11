@@ -27,3 +27,11 @@ html, body {
 div, p, span, a {
   font-size: 14px;
 }
+
+a {
+  text-decoration: none;
+}
+// 公共类名部分
+.background-gray {
+  background-color: #F4F5F5 !important;
+}

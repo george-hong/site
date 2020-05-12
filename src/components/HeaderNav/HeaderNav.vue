@@ -152,6 +152,7 @@
                 float: left;
                 line-height: 60px;
                 padding: 0 10px;
+                height: 100%;
                 &:last-child {
                     display: flex;
                     align-items: center;

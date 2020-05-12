@@ -44,7 +44,7 @@ const routes = [
 
 const router = new VueRouter({
   routes,
-  // mode: 'history',
+  mode: process.env.NODE_ENV === 'production' ? 'history' : 'hash', // 开发环境使用hash模式,生产环境使用history模式
 });
 
 export default router;

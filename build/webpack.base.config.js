@@ -4,7 +4,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 require('babel-polyfill');
 
-
 const resolvePath = dir => path.join(__dirname, '..', dir);
 
 const config = {
@@ -12,8 +11,8 @@ const config = {
     main: ['babel-polyfill', path.join(__dirname, '../main.js')]
   },
   output: {
-    path: path.resolve(__dirname, '../dist'),
-    filename: 'main.js'
+    path: path.resolve(__dirname, '../../siteServer/app'),
+    filename: 'main-[hash].js'
   },
   resolve: {
     alias: {
@@ -61,7 +60,7 @@ const config = {
       template : path.join(__dirname, "../src/pages/index.html"),
       filename : 'index.html'
     }),
-    new ExtractTextPlugin("main.css")
+    new ExtractTextPlugin("main.css"),
   ]
 };
 

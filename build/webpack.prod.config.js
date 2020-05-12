@@ -2,15 +2,7 @@ const webpackBaseConfig = require('./webpack.base.config');
 const WebpackMerge = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const Uglify = require('uglifyjs-webpack-plugin');
-
-webpackBaseConfig.plugins.push(new Uglify({
-    uglifyOptions: {
-        mangle: false,
-        output: {
-            comments: false
-        },
-    }
-}))
+const webpack = require('webpack');
 
 module.exports = WebpackMerge(webpackBaseConfig, {
     mode: 'production',
@@ -34,8 +26,19 @@ module.exports = WebpackMerge(webpackBaseConfig, {
         }]
     },
     plugins: [
+        new Uglify({
+            uglifyOptions: {
+                mangle: false,
+                output: {
+                    comments: false
+                },
+            }
+        }),
         new MiniCssExtractPlugin({
-          filename: 'all-[hash].css'
-        })
-      ]
+          filename: 'main-[hash].css'
+        }),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('production')
+        }),
+    ]
 });

@@ -1,14 +1,14 @@
+require('@babel/polyfill');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-require('babel-polyfill');
 
 const resolvePath = dir => path.join(__dirname, '..', dir);
 
-const config = {
+module.exports = {
   entry: {
-    main: ['babel-polyfill', path.join(__dirname, '../main.js')]
+    main: ['@babel/polyfill', path.join(__dirname, '../main.js')]
   },
   output: {
     path: path.resolve(__dirname, '../../siteServer/app'),
@@ -31,6 +31,9 @@ const config = {
       }, {
         test: /\.js$/,
         loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env']
+        },
         exclude: /node_modules/
       }, {
         test: /\.vue$/,
@@ -63,5 +66,3 @@ const config = {
     new ExtractTextPlugin("main.css"),
   ]
 };
-
-module.exports = config;

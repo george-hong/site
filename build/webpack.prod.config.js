@@ -26,14 +26,15 @@ module.exports = WebpackMerge(webpackBaseConfig, {
         }]
     },
     plugins: [
-        new Uglify({
-            uglifyOptions: {
-                mangle: false,
-                output: {
-                    comments: false
-                },
-            }
-        }),
+        // TODO 这里使用压缩插件报错
+        // new Uglify({
+        //     uglifyOptions: {
+        //         mangle: false,
+        //         output: {
+        //             comments: false
+        //         },
+        //     }
+        // }),
         new MiniCssExtractPlugin({
           filename: 'main-[hash].css'
         }),

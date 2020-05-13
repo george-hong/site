@@ -14,7 +14,7 @@ const isNumber = (value) => {
   return getPrototype(value) === 'Number';
 };
 
-module.exports = {
+export {
   ObjectToString,
   isObject,
   isFunction,

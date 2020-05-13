@@ -16,8 +16,8 @@ const getterNameSpace = {
 
 };
 
-module.exports = {
+export {
   stateNameSpace,
   getterNameSpace,
   commitNameSpace,
-}
+};

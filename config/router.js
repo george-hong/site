@@ -6,6 +6,8 @@ import ArticleEdit from '../src/pages/article/edit/edit.vue';
 import Login from '../src/pages/mine/login/login.vue';
 import Sign from '../src/pages/sign/sign.vue';
 import DictionaryManage from '../src/pages/system/dictionaryManage.vue';
+import Search from '../src/pages/search/search.vue';
+// const Search = () => import('../src/pages/search/search.vue');
 
 Vue.use(VueRouter);
 
@@ -19,6 +21,11 @@ const routes = [
     name: 'sign',
     path: '/sign',
     component: Sign,
+  },
+  {
+    name: 'search',
+    path: '/search',
+    component: Search,
   },
   {
     name: 'articleList',

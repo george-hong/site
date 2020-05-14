@@ -1,8 +1,8 @@
 const webpackBaseConfig = require('./webpack.base.config');
 const WebpackMerge = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const Uglify = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
+const Uglify = require('uglifyjs-webpack-plugin');
 
 module.exports = WebpackMerge(webpackBaseConfig, {
     mode: 'production',
@@ -26,15 +26,15 @@ module.exports = WebpackMerge(webpackBaseConfig, {
         }]
     },
     plugins: [
-        // TODO 这里使用压缩插件报错
-        // new Uglify({
-        //     uglifyOptions: {
-        //         mangle: false,
-        //         output: {
-        //             comments: false
-        //         },
-        //     }
-        // }),
+        new Uglify({
+            uglifyOptions: {
+                compress: false,
+                mangle: false,
+                output: {
+                    ast: true,
+                }
+            }
+        }),
         new MiniCssExtractPlugin({
           filename: 'main-[hash].css'
         }),

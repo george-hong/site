@@ -4,6 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = WebpackMerge(webpackBaseConfig, {
+    mode: 'development',
     module: {
         rules: [{
             test: /\.css$/,

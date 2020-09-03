@@ -24,6 +24,10 @@ const queryArticle = params => {
 const getArticleList = params => {
     return request.get('api/article/list', params);
 };
+// 搜索信息
+const search = params => {
+    return request.get('api/search', params);
+}
 
 const api = {
     sign,
@@ -32,9 +36,9 @@ const api = {
     editArticle,
     queryArticle,
     getArticleList,
+    search,
 };
 
-export default api;
 export {
     sign,
     checkAccountIsRepeat,
@@ -42,4 +46,7 @@ export {
     editArticle,
     queryArticle,
     getArticleList,
+    search,
 };
+
+export default api;

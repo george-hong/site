@@ -119,7 +119,16 @@
             onSearch() {
                 // 仅当有值才执行搜索操作
                 if (this.searchValue) {
-                    console.log('search', this.searchValue);
+                    // 变更值并确认后更新store中的搜索值以触发搜索
+                    this.$store.commit(commitNameSpace.updateSearchKeyWord, this.searchValue);
+                    if (this.$route.path !== '/search') {
+                        this.$router.push({
+                            path: '/search',
+                            query: {
+                                keyword: this.searchValue
+                            }
+                        });
+                    }
                 }
             }
         },

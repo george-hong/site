@@ -22,6 +22,8 @@
             <i class="el-icon-upload el-icon--right"></i>
             发布
         </el-button>
+        <!--    工具箱    -->
+        <article-util />
     </div>
 </template>
 

@@ -1,7 +1,11 @@
 <template>
     <div class="search-page">
         <div class="w">
-            <div class="article-list" ref="listComponent">
+            <div
+                class="article-list"
+                ref="listComponent"
+                v-if="articleList && articleList.length"
+            >
                 <ul class="list-wrapper">
                     <li v-for="article in articleList"
                         :key="article.id">
@@ -16,6 +20,10 @@
                     </li>
                 </ul>
             </div>
+            <empty
+                v-else
+                tip="没有相关信息"
+            />
         </div>
     </div>
 </template>
@@ -44,7 +52,14 @@
                     .catch(error => {
                         console.log('search error', error)
                     });
-            }
+            },
+            viewArticleDetail(article) {
+                const {id} = article;
+                this.$router.push({
+                    name: 'articleDetail',
+                    params: {id}
+                });
+            },
         },
         created () {
             const { keyword } = this.$route.query;

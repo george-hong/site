@@ -1,4 +1,4 @@
-import request from './config';
+import request, { serverBaseUrl } from './config';
 
 // 注册
 const sign = (params) => {
@@ -27,7 +27,21 @@ const getArticleList = params => {
 // 搜索信息
 const search = params => {
     return request.get('api/search', params);
-}
+};
+// 上传文件
+const upload = params => {
+    return request.post('api/upload', params, {
+        // 设置请求类型
+        headers: {
+            'Accept': '*/*',
+            'Content-Type': 'multipart/form-data'
+        },
+        // 不处理请求数据
+        transformRequest: []
+    });
+};
+
+const uploadImageUrl = `${serverBaseUrl}api/upload`;
 
 const api = {
     sign,
@@ -37,6 +51,8 @@ const api = {
     queryArticle,
     getArticleList,
     search,
+    upload,
+    uploadImageUrl
 };
 
 export {
@@ -47,6 +63,8 @@ export {
     queryArticle,
     getArticleList,
     search,
+    upload,
+    uploadImageUrl
 };
 
 export default api;

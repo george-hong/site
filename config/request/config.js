@@ -2,7 +2,7 @@ import axios from 'axios';
 import Qs from 'qs';
 import message from '../message/message';
 
-const serverBaseUrl = 'http://127.0.0.1:3000/'; // 接口请求地址
+export const serverBaseUrl = 'http://127.0.0.1:3000/'; // 接口请求地址
 const timeout = 150000;                         // 接口超时时间
 
 // 创建axios实例
@@ -41,7 +41,7 @@ function createAxiosInstance(callback) {
 
     callback && callback(instance);
 
-    request.get = function (url, data) {
+    request.get = function (url, data, config) {
         return new Promise((resolve, reject) => {
             instance.get(url, { params: data}).then(response => {
                 resolve(response.data.data);
@@ -51,9 +51,9 @@ function createAxiosInstance(callback) {
         })
     };
 
-    request.post = function (url, data) {
+    request.post = function (url, data, config) {
         return new Promise((resolve, reject) => {
-            instance.post(url, data).then(response => {
+            instance.post(url, data, config).then(response => {
                 resolve(response.data.data);
             }).catch(function (msg) {
                 reject(msg);

@@ -1,5 +1,5 @@
 <template>
-    <div class="empty-component">
+    <div :class="`empty-component ${customClass}`">
         <i class="el-icon-receiving" />
         <span>{{ tip }}</span>
     </div>
@@ -12,6 +12,10 @@
             tip: {
                 type: String,
                 default: '没有相关内容'
+            },
+            customClass: {
+                type: String,
+                default: ''
             }
         }
     }

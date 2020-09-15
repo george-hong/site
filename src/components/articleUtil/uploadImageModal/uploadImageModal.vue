@@ -31,7 +31,10 @@
                 name="review"
             >
                 <div class="file-list-container">
-                    <ul class="file-list">
+                    <ul
+                        class="file-list"
+                        v-if="uploadFileInfo && uploadFileInfo.length"
+                    >
                         <li
                             v-for="fileInfo in uploadFileInfo"
                             :key="fileInfo.id"
@@ -40,6 +43,11 @@
                             <p>{{fileInfo.fileName}}</p>
                         </li>
                     </ul>
+                    <empty
+                        v-else
+                        custom-class="empty"
+                        tip="暂未上传文件"
+                    />
                 </div>
             </el-tab-pane>
         </el-tabs>
@@ -96,6 +104,11 @@
                     .catch(error => {
                         console.log(`文件信息获取异常:${error}`);
                     });
+            },
+            // 重置工具状态
+            resetComponent () {
+                this.activeTab = 'upload';
+                this.uploadFileInfo = [];
             }
         },
         computed: {
@@ -112,7 +125,9 @@
             },
             // 子级更新显示状态通知到父级
             isShowModal (newValue) {
-                this.$emit('update:visible', newValue)
+                this.$emit('update:visible', newValue);
+                // 关闭上传工具时重置工具状态
+                if (!newValue) this.resetComponent();
             }
         }
     }
@@ -149,6 +164,9 @@
                     }
                 }
             }
+        }
+        .empty {
+            padding: 100px 0 !important;
         }
         @media screen and (min-width: 1599px) {
             .file-list-container {

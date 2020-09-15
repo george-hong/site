@@ -31,7 +31,46 @@ div, p, span, a {
 a {
   text-decoration: none;
 }
-// 公共类名部分
+// ------------------ 公共类名部分 ------------------
+
+// 灰色背景
 .background-gray {
   background-color: #F4F5F5 !important;
 }
+
+// 居中显示
+.xy-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+// 横轴居中
+.x-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+// 纵轴居中
+.y-center {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+// flex内容居中显示
+.flex-content-xy-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+// flex内容横轴居中显示
+.flex-content-x-center {
+    display: flex;
+    justify-content: center;
+}
+// flex内容纵轴居中显示
+.flex-content-y-center {
+    display: flex;
+    align-items: center;
+}
+

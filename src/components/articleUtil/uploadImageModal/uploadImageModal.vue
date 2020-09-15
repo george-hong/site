@@ -36,10 +36,37 @@
                         v-if="uploadFileInfo && uploadFileInfo.length"
                     >
                         <li
-                            v-for="fileInfo in uploadFileInfo"
+                            v-for="(fileInfo, fileIndex) in uploadFileInfo"
                             :key="fileInfo.id"
                         >
-                            <img :src="fileInfo.url" :alt="fileInfo.fileName">
+                            <div class="image-container">
+                                <img :src="fileInfo.url" :alt="fileInfo.fileName">
+                                <div class="operate-area">
+                                    <div
+                                        class="left flex-content-xy-center"
+                                        @click="previewImage(fileIndex)"
+                                    >
+                                        <i class="el-icon-zoom-in"/>
+                                        <span>查看</span>
+                                    </div>
+                                    <div class="right">
+                                        <div
+                                            class="top flex-content-xy-center"
+                                            @click="copyFileField(fileInfo, 'url')"
+                                        >
+                                            <i class="el-icon-copy-document"/>
+                                            <span>复制链接</span>
+                                        </div>
+                                        <div
+                                            class="bottom flex-content-xy-center"
+                                            @click="copyFileField(fileInfo, 'fileName')"
+                                        >
+                                            <i class="el-icon-document-copy"/>
+                                            <span>复制文件名</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <p>{{fileInfo.fileName}}</p>
                         </li>
                     </ul>
@@ -51,7 +78,13 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
-
+        <viewer
+            class="viewer"
+            :images="imageList"
+            ref="viewer"
+        >
+            <img v-for="src in imageList" :src="src" :key="src">
+        </viewer>
     </el-dialog>
 </template>
 
@@ -109,10 +142,29 @@
             resetComponent () {
                 this.activeTab = 'upload';
                 this.uploadFileInfo = [];
+            },
+            // 预览图片
+            previewImage (imageIndex) {
+                this.$refs.viewer.$viewer.view(imageIndex);
+            },
+            // 拷贝文件的某个字段到剪贴板
+            copyFileField (fileInfo, field) {
+                const transfer = document.createElement('input');
+                document.body.appendChild(transfer);
+                transfer.value = fileInfo[field];  // 这里表示想要复制的内容
+                transfer.select();
+                if (document.execCommand('copy')) {
+                    document.execCommand('copy');
+                    this.$message.info('已复制到剪贴板');
+                }
+                document.body.removeChild(transfer);
             }
         },
         computed: {
-            ...mapState(['userInfo'])
+            ...mapState(['userInfo']),
+            imageList () {
+                return this.uploadFileInfo.map(fileInfo => fileInfo.url);
+            }
         },
         watch: {
             activeTab (newValue) {
@@ -156,8 +208,56 @@
             .file-list {
                 > li {
                     margin-bottom: 20px;
-                    img {
-                        max-width: 100%;
+                    .image-container {
+                        position: relative;
+                        img {
+                            max-width: 100%;
+                        }
+                        .operate-area {
+                            position: absolute;
+                            display: flex;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            z-index: 2;
+                            background: rgba(0, 0, 0, .5);
+                            opacity: 0;
+                            transition: $short-transition-time opacity;
+                            color: #FFF;
+                            &:hover {
+                                opacity: 1;
+                            }
+                            .left {
+                                width: 50%;
+                                height: 100%;
+                            }
+                            .right {
+                                width: 50%;
+                                height: 100%;
+                                display: flex;
+                                flex-direction: column;
+                                .top {
+                                    height: 50%;
+                                }
+                                .bottom {
+                                    height: 50%;
+                                }
+                            }
+                            .left, .top, .bottom {
+                                background: rgba(0, 0, 0, .5);
+                                opacity: 0;
+                                transition: $short-transition-time opacity;
+                                cursor: pointer;
+                                &:hover {
+                                    opacity: 1;
+                                }
+                                i {
+                                    display: inline-block;
+                                    margin-right: 10px;
+                                }
+                            }
+                        }
                     }
                     p {
                         text-align: center;
@@ -167,6 +267,9 @@
         }
         .empty {
             padding: 100px 0 !important;
+        }
+        .viewer {
+            display: none;
         }
         @media screen and (min-width: 1599px) {
             .file-list-container {

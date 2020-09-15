@@ -7,7 +7,6 @@ import Login from '../src/pages/mine/login/login.vue';
 import Sign from '../src/pages/sign/sign.vue';
 import DictionaryManage from '../src/pages/system/dictionaryManage.vue';
 import Search from '../src/pages/search/search.vue';
-// const Search = () => import('../src/pages/search/search.vue');
 
 Vue.use(VueRouter);
 

@@ -40,6 +40,10 @@ const upload = params => {
         transformRequest: []
     });
 };
+// 获取用户上传的文件信息
+const getUploadFilesInfo = params => {
+    return request.get('api/upload/getUploadFilesByUser', params);
+}
 
 const uploadImageUrl = `${serverBaseUrl}api/upload`;
 
@@ -52,6 +56,7 @@ const api = {
     getArticleList,
     search,
     upload,
+    getUploadFilesInfo,
     uploadImageUrl
 };
 
@@ -64,6 +69,7 @@ export {
     getArticleList,
     search,
     upload,
+    getUploadFilesInfo,
     uploadImageUrl
 };
 

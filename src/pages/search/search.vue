@@ -46,8 +46,9 @@
                 };
                 search(requestParams)
                     .then(result => {
-                        const { data } = result;
-                        if (data) this.articleList = data;
+                        console.log('result', result)
+                        const { content } = result;
+                        if (content) this.articleList = content;
                     })
                     .catch(error => {
                         console.log('search error', error)

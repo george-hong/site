@@ -75,17 +75,17 @@
                 });
             },
             // 循环加载数据  知道没有数据或者元素高度超过页面高度
-            async loadUtillNoMoreOrHaveScroll() {
+            async loadUntilNoMoreOrHaveScroll() {
                 await this.getArticleList();
                 this.$nextTick(() => {
-                    if (!this.isNoMore && this.$refs.listComponent.offsetHeight < this.clientHeight) this.loadUtillNoMoreOrHaveScroll();
+                    if (!this.isNoMore && this.$refs.listComponent.offsetHeight < this.clientHeight) this.loadUntilNoMoreOrHaveScroll();
                 })
             },
             async getArticleList(page) {
                 this.isLoading = true;
                 try {
                     const listInfo = await this.requestGetArticleList(page);
-                    const {data: listData, total} = listInfo;
+                    const { content: listData, total } = listInfo;
                     this.isNoMore = this.checkIsNoMore(total);
                     this.currentPage += 1;
                     this.articleList = this.articleList.concat(listData);
@@ -151,7 +151,7 @@
             // 如果是只加载一次，不添加滚动加载事件
             if (!this.once) {
                 this.resizeEvent();
-                this.loadUtillNoMoreOrHaveScroll();
+                this.loadUntilNoMoreOrHaveScroll();
                 window.addEventListener('resize', this.resizeEvent);
                 window.addEventListener('scroll', this.scrollEvent);
             }

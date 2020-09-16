@@ -1,8 +1,6 @@
 <template>
   <div class="w home-page">
     <article-list once></article-list>
-    <router-link to="/article/edit">写文章</router-link>
-    <router-link to="/system/dictionaryManage">字典</router-link>
   </div>
 </template>
 

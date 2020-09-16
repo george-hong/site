@@ -5,6 +5,7 @@ const stateNameSpace = {
     loginFailCallback: 'loginFailCallback',
     globalId: 'globalId',                           // 全局唯一id计数器
     searchKeyWord: 'keyWord',                       // 搜索key
+    isShowFooter: 'isShowFooter',
 };
 
 const commitNameSpace = {
@@ -12,6 +13,7 @@ const commitNameSpace = {
     saveUserInfo: 'saveUserInfo',
     updateGlobalId: 'updateGlobalId',
     updateSearchKeyWord: 'updateSearchKeyWord',
+    updateIsShowFooter: 'updateIsShowFooter',
 };
 
 const getterNameSpace = {};

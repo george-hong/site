@@ -13,6 +13,7 @@ const store = new Vuex.Store({
         [stateNameSpace.loginFailCallback]: null,        // 登录失败后执行的回调函数
         [stateNameSpace.userInfo]: null,                 // 用户信息
         [stateNameSpace.searchKeyWord]: '',              // 导航栏搜索关键字
+        [stateNameSpace.isShowFooter]: false,            // 是否展示底部备案等信息
     },
     mutations: {
         // 切换登录窗口的展示状态 payload = { visible, callback } or Boolean
@@ -43,6 +44,9 @@ const store = new Vuex.Store({
         },
         [commitNameSpace.updateSearchKeyWord](state, payload) {
             state[stateNameSpace.searchKeyWord] = payload;
+        },
+        [commitNameSpace.updateIsShowFooter](state, payload) {
+            state[stateNameSpace.isShowFooter] = payload;
         }
     }
 });

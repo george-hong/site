@@ -24,25 +24,39 @@
                         />
                     </div>
                     <el-button
-                      v-if="!userInfo"
-                      type="text"
-                      @click="goSign"
+                        size="small"
+                        @click="goArticleEdit"
+                        type="primary"
+                        class="article-edit-button"
                     >
-                        注册
+                        写文章
                     </el-button>
                     <el-button
                         v-if="!userInfo"
                         type="text"
                         @click="login"
                     >
-                        登录
+                        登录/注册
                     </el-button>
-                    <span
+                    <el-popover
                         v-else
-                        @click="logout"
+                        trigger="hover"
                     >
-                        {{userInfo.userName}}
-                    </span>
+                        <span
+                            slot="reference"
+                            @click="goPersonCenter"
+                        >
+                            {{userInfo.userName}}
+                        </span>
+                        <el-button
+                            class="popper-button"
+                            type="text"
+                            size="small"
+                            @click="logout"
+                        >
+                            退出登录
+                        </el-button>
+                    </el-popover>
                 </li>
             </ul>
         </div>
@@ -90,14 +104,8 @@
                 localStorage.removeItem(storageNameSpace.userInfo);
                 localStorage.removeItem(storageNameSpace.tokenInfo);
                 this.$store.commit(commitNameSpace.saveUserInfo, null);
+                this.$router.push({ name: 'root' });
             },
-            // goRouter(path) {
-            //     const { path: currentPath } = this.$route;
-            //     // 只有路径改变时才跳转
-            //     if (currentPath !== path) {
-            //         this.$router.push(path);
-            //     }
-            // },
             tryGetUserInfoFromLocalStorage() {
                 const localUserInfo = localStorage.getItem(storageNameSpace.userInfo);
                 const tokenExpiresTime = parseInt(localStorage.getItem(storageNameSpace.tokenExpiresTime));
@@ -130,6 +138,15 @@
                         });
                     }
                 }
+            },
+            // 判断是否登录后跳转到文章编辑页面
+            goArticleEdit () {
+                if (this.userInfo) this.$router.push({ name: 'articleEdit' });
+                else this.login();
+            },
+            // 跳转到个人中心页面
+            goPersonCenter () {
+                this.$router.push({ name: 'personCenter' });
             }
         },
         mounted() {
@@ -203,5 +220,11 @@
                 }
             }
         }
+        .article-edit-button {
+            margin-right: 10px;
+        }
+    }
+    .popper-button {
+        width: 100%;
     }
 </style>

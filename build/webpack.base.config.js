@@ -60,7 +60,7 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
-      template : path.join(__dirname, "../src/pages/index.html"),
+      template : path.join(__dirname, "../src/views/index.html"),
       filename : 'index.html'
     }),
     new ExtractTextPlugin("main.css"),

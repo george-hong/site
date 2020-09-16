@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import App from './src/pages/app/app.vue';
-import router from './config/router';
+import App from './src/views/app/app.vue';
+import router, { routerConfig } from './config/router';
 import store from './config/store/store';
 import message from './config/message/message';
 import ElementUI from 'element-ui';
@@ -13,7 +13,7 @@ import './src/common/style/common.scss';
 
 // 自动注册组件
 const autoRegisterBaseComponents = () => {
-  const requireComponent = require.context('./src/components', true, /\.vue$/);
+  const requireComponent = require.context('./src/autoRegisterComponents', true, /\.vue$/);
   requireComponent.keys().forEach(componentPath => {
     const componentConfig = requireComponent(componentPath);
     const controller = componentConfig.default || componentConfig;
@@ -35,10 +35,23 @@ Vue.use(ElementUI);
 Vue.use(Viewer);
 // 注册全局提示信息
 Vue.prototype.message = message;
+// 生成全局唯一id
 Vue.prototype.getGlobalId = () => {
   store.commit(commitNameSpace.updateGlobalId);
   return store.state[stateNameSpace.globalId];
 };
+router.beforeEach((to, from, next) => {
+    const { name } = to;
+    const matchedNextRoute = routerConfig.find(config => config.name === name);
+    // 是否展示顶部备案信息
+    let isShowFooter = false;
+    if (matchedNextRoute) {
+        const { showFooter } = matchedNextRoute;
+        isShowFooter = !!showFooter;
+    }
+    store.commit(commitNameSpace.updateIsShowFooter, isShowFooter)
+    next();
+})
 
 autoRegisterBaseComponents();
 autoRegisterBaseFilters();

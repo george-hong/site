@@ -1,15 +1,16 @@
 <template>
     <div class="root-container">
         <header-nav></header-nav>
-        <div class="main-content">
+        <div :class="{'main-content': true, 'show-footer': isShowFooter }">
             <router-view v-if="!isHomePage"></router-view>
             <home-page v-if="isHomePage"></home-page>
         </div>
-        <footer-info></footer-info>
+        <footer-info v-show="isShowFooter" />
     </div>
 </template>
 
 <script>
+    import { stateNameSpace } from '@nameSpace/storeNameSpace';
 
     export default {
         data() {
@@ -21,6 +22,9 @@
             isHomePage() {
                 const { path } = this.$route;
                 return path === '/';
+            },
+            isShowFooter() {
+                return this.$store.state[stateNameSpace.isShowFooter];
             }
         }
     }
@@ -30,9 +34,12 @@
     .root-container {
         height: 100%;
         .main-content {
-            padding: 60px 0 60px;
-            margin-bottom: -60px;
+            padding: 60px 0 0;
             min-height: 100%;
+            &.show-footer {
+                padding: 60px 0 60px;
+                margin-bottom: -60px;
+            }
         }
     }
 </style>

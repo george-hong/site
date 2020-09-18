@@ -41,21 +41,34 @@
                     <el-popover
                         v-else
                         trigger="hover"
+                        popper-class="button-popper"
                     >
-                        <span
+                        <div
+                            class="avatar-container"
                             slot="reference"
                             @click="goPersonCenter"
                         >
-                            {{userInfo.userName}}
-                        </span>
-                        <el-button
-                            class="popper-button"
-                            type="text"
-                            size="small"
-                            @click="logout"
-                        >
-                            退出登录
-                        </el-button>
+                            <img
+                                :src="userInfo.headerImage"
+                                :alt="userInfo.userName"
+                            />
+                        </div>
+                        <div class="user-hover-button-box">
+                            <el-button
+                                class="popper-button"
+                                size="small"
+                                @click="goPersonCenter"
+                            >
+                                个人中心
+                            </el-button>
+                            <el-button
+                                class="popper-button"
+                                size="small"
+                                @click="logout"
+                            >
+                                退出登录
+                            </el-button>
+                        </div>
                     </el-popover>
                 </li>
             </ul>
@@ -182,6 +195,18 @@
                 &:last-child {
                     display: flex;
                     align-items: center;
+                    .avatar-container {
+                        width: 30px;
+                        height: 30px;
+                        box-sizing: border-box;
+                        overflow: hidden;
+                        border-radius: 50%;
+                        img {
+                            display: block;
+                            width: 100%;
+                            height: 100%;
+                        }
+                    }
                 }
             }
         }
@@ -224,7 +249,17 @@
             margin-right: 10px;
         }
     }
-    .popper-button {
-        width: 100%;
+    .button-popper {
+        padding: 0;
+        .user-hover-button-box {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            .popper-button {
+                width: 100%;
+                margin: 0;
+                border: none;
+            }
+        }
     }
 </style>

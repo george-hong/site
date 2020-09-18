@@ -40,6 +40,18 @@ const upload = params => {
         transformRequest: []
     });
 };
+// 更新头像
+const updateAvatar = params => {
+    return request.post('api/upload/updateAvatar', params, {
+        // 设置请求类型
+        headers: {
+            'Accept': '*/*',
+            'Content-Type': 'multipart/form-data'
+        },
+        // 不处理请求数据
+        transformRequest: []
+    });
+};
 // 获取用户上传的文件信息
 const getUploadFilesInfo = params => {
     return request.get('api/upload/getUploadFilesByUser', params);
@@ -56,6 +68,7 @@ const api = {
     getArticleList,
     search,
     upload,
+    updateAvatar,
     getUploadFilesInfo,
     uploadImageUrl
 };
@@ -69,6 +82,7 @@ export {
     getArticleList,
     search,
     upload,
+    updateAvatar,
     getUploadFilesInfo,
     uploadImageUrl
 };

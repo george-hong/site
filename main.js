@@ -4,8 +4,9 @@ import router, { routerConfig } from './config/router';
 import store from './config/store/store';
 import message from './config/message/message';
 import ElementUI from 'element-ui';
+import VueCropper from 'vue-cropper';
 import Viewer from 'v-viewer';
-import 'viewerjs/dist/viewer.css'
+import 'viewerjs/dist/viewer.css';
 import { commitNameSpace, stateNameSpace } from '@nameSpace/storeNameSpace';
 import 'element-ui/lib/theme-chalk/index.css';
 import './src/common/style/reset.scss';
@@ -32,6 +33,9 @@ const autoRegisterBaseFilters = () => {
 };
 
 Vue.use(ElementUI);
+// 图片裁剪插件
+Vue.use(VueCropper);
+// 图片预览插件
 Vue.use(Viewer);
 // 注册全局提示信息
 Vue.prototype.message = message;

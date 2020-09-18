@@ -113,6 +113,7 @@
                 const formData = new FormData()
                 formData.append('file', event.file)
                 formData.append('path', 'article');
+                formData.append('type', 'articleImage');
                 formData.append('uploaderId', this.userInfo.userId);
                 api.upload(formData)
                     .then(result => {
@@ -127,7 +128,8 @@
             // 获取当前用户上传的文件信息
             getUploadFilesInfo () {
                 const requestParams = {
-                    uploaderId: this.userInfo.userId
+                    uploaderId: this.userInfo.userId,
+                    type: 'articleImage'
                 }
                 api.getUploadFilesInfo(requestParams)
                     .then(result => {

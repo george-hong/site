@@ -6,7 +6,9 @@
         >
             <div class="w">
                 <div class="left">
-                    <img :src="userInfo.headerImage" />
+                    <div class="avatar-container">
+                        <img :src="userInfo.headerImage" />
+                    </div>
                 </div>
                 <div class="right">
                     <span class="user-name">{{userInfo.userName}}</span>
@@ -29,18 +31,22 @@
         <div class="w">
 
         </div>
-        <modify-header-image :visible="isShowModifyHeaderImage"/>
+        <update-avatar
+            :visible.sync="isShowModifyHeaderImage"
+            @updatedAvatar="onUpdateAvatar"
+        />
     </div>
 </template>
 
 <script>
-    import { stateNameSpace } from '@nameSpace/storeNameSpace';
-    import modifyHeaderImage from './components/modifyHeaderImage.vue';
+    import { stateNameSpace, commitNameSpace } from '@nameSpace/storeNameSpace';
+    import storageNameSpace from '@nameSpace/storageNameSpace';
+    import updateAvatar from './components/updateAvatar.vue';
 
     export default {
         name: 'personCenterPage',
         components: {
-            modifyHeaderImage
+            updateAvatar
         },
         data () {
             return {
@@ -52,6 +58,18 @@
             // 展示更换头像窗口
             showModifyHeaderImage () {
                 this.isShowModifyHeaderImage = true;
+            },
+            // 更新头像后执行
+            onUpdateAvatar (imageInfo) {
+                console.log('-imageInfo-', imageInfo)
+                try {
+                    const localUserInfo = JSON.parse(localStorage.getItem(storageNameSpace.userInfo));
+                    localUserInfo.headerImage = imageInfo.url;
+                    localStorage.setItem(storageNameSpace.userInfo, JSON.stringify(localUserInfo));
+                    this.$store.commit(commitNameSpace.saveUserInfo, localUserInfo);
+                } catch (err) {
+                    console.log('用户信息更新失败', err);
+                }
             }
         },
         computed: {
@@ -76,11 +94,16 @@
                     padding-right: 15px;
                     justify-content: flex-end;
                     align-items: center;
-                    img {
+                    .avatar-container {
                         width: 80px;
                         height: 80px;
                         border-radius: 50%;
                         border: 2px solid #FFF;
+                        overflow: hidden;
+                    }
+                    img {
+                        width: 100%;
+                        height: 100%;
                     }
                 }
                 .right {

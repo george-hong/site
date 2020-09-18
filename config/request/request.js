@@ -12,6 +12,10 @@ const checkAccountIsRepeat = params => {
 const login = params => {
     return request.post('api/user/login', params);
 };
+// 更新用户基本信息
+const updateUserBaseInfo = params => {
+    return request.post('api/user/updateBaseInfo', params);
+};
 // 新增文章
 const editArticle = params => {
     return request.post('api/article/edit', params);
@@ -63,6 +67,7 @@ const api = {
     sign,
     checkAccountIsRepeat,
     login,
+    updateUserBaseInfo,
     editArticle,
     queryArticle,
     getArticleList,
@@ -77,6 +82,7 @@ export {
     sign,
     checkAccountIsRepeat,
     login,
+    updateUserBaseInfo,
     editArticle,
     queryArticle,
     getArticleList,

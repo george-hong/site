@@ -2,8 +2,8 @@
     <div class="root-container">
         <header-nav></header-nav>
         <div :class="{'main-content': true, 'show-footer': isShowFooter }">
-            <router-view v-if="!isHomePage"></router-view>
-            <home-page v-if="isHomePage"></home-page>
+            <router-view v-if="!isHomePage" />
+            <home-page v-if="isHomePage" />
         </div>
         <footer-info v-show="isShowFooter" />
     </div>

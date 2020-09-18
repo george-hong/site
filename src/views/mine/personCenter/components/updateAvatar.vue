@@ -5,6 +5,8 @@
         title="修改头像"
         custom-class="modify-header-modal"
         destroy-on-close
+        :show-close="false"
+        :close-on-click-modal="false"
         @close="resetComponent"
     >
         <el-upload
@@ -69,7 +71,7 @@
     import { stateNameSpace, storageNameSpace } from '@nameSpace/storeNameSpace';
 
     export default {
-        name: 'modifyHeaderImage',
+        name: 'modifyAvatar',
         props: {
             visible: {              // 是否显示更换头像弹窗
                 type: Boolean,
@@ -119,9 +121,8 @@
             confirm () {
                 if (this.currentStep === 0) return this.$message.info('请先上传图片');
                 this.$refs.cropper.getCropBlob(blobData => {
-                    //上传阿里云服务器
                     console.log(blobData)
-                    this.saveHeaderImage(blobData);
+                    this.saveAvatar(blobData);
                 })
             },
             // 取消
@@ -129,7 +130,7 @@
                 this.isShowModal = false;
             },
             // 保存头像
-            saveHeaderImage (blobData) {
+            saveAvatar (blobData) {
                 if (this.isUploading) return;
                 this.isUploading = true;
                 const formData = new FormData();

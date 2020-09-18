@@ -25,6 +25,7 @@
 
 <style lang="scss" scoped>
     .footer-info {
+        background: #FFF;
         height: 60px;
         border-top: 1px solid #e6e6e6;
         padding: 10px 0 10px;

@@ -49,7 +49,7 @@
                             @click="goPersonCenter"
                         >
                             <img
-                                :src="userInfo.headerImage"
+                                :src="userInfo.avatar"
                                 :alt="userInfo.userName"
                             />
                         </div>

@@ -1,41 +1,57 @@
 html, body {
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  * {
-    box-sizing: border-box;
-  }
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: #f4f5f5;
+    * {
+        box-sizing: border-box;
+    }
 }
+
 .w {
-  max-width: 1000px;
-  min-width: 375px;
-  margin: 0 auto;
-  padding: 10px;
+    max-width: 1000px;
+    min-width: 375px;
+    margin: 0 auto;
+    padding: 10px;
+    background: #FFF;
+    &.full-height {
+        min-height: 100%;
+    }
+    &.transparent {
+        background: transparent;
+    }
+    &.no-padding {
+        padding: 0;
+    }
 }
 
 .fl {
-  float: left !important;
+    float: left !important;
 }
+
 .fr {
-  float: right !important;
+    float: right !important;
 }
+
 .clearfix::after {
-  content: '';
-  display: block;
-  clear: both;
+    content: '';
+    display: block;
+    clear: both;
 }
+
 div, p, span, a {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
+
 // ------------------ 公共类名部分 ------------------
 
 // 灰色背景
 .background-gray {
-  background-color: #F4F5F5 !important;
+    background-color: #F4F5F5 !important;
 }
 
 // 居中显示
@@ -45,29 +61,34 @@ a {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
 // 横轴居中
 .x-center {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
 }
+
 // 纵轴居中
 .y-center {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
 }
+
 // flex内容居中显示
 .flex-content-xy-center {
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 // flex内容横轴居中显示
 .flex-content-x-center {
     display: flex;
     justify-content: center;
 }
+
 // flex内容纵轴居中显示
 .flex-content-y-center {
     display: flex;

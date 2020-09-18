@@ -6,6 +6,8 @@
         :show-close="false"
         :visible.sync="isShowLoginWindow"
         :before-close="cancelLogin"
+        :close-on-click-modal="false"
+        @close="resetComponent"
     >
         <el-form ref="loginForm"
                  hide-required-asterisk
@@ -162,6 +164,13 @@
             },
             cancelLogin() {
                 this.$store.commit(commitNameSpace.toggleShowLoginWindow, false);
+            },
+            // 重置组件信息
+            resetComponent () {
+                this.loginForm = {
+                    account: '',
+                    password: ''
+                }
             }
         },
         computed: {

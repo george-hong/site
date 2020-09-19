@@ -3,48 +3,15 @@
         width="400px"
         :visible.sync="isShowModal"
         title="修改头像"
-        custom-class="modify-header-modal"
+        custom-class="upload-avatar-modal"
         destroy-on-close
         :show-close="false"
         :close-on-click-modal="false"
-        @close="resetComponent"
     >
-        <el-upload
-            v-show="currentStep === 0"
-            class="upload-demo"
-            action=""
-            drag
-            :auto-upload="false"
-            :show-file-list="false"
-            :on-change="changeUpload"
-        >
-            <i class="el-icon-upload" />
-            <div class="el-upload__text">点击上传</div>
-            <div class="el-upload__tip">支持绝大多数图片格式，单张图片最大支持5MB</div>
-        </el-upload>
-        <div
-            class="cropper-content"
-            v-show="currentStep === 1"
-        >
-            <vue-cropper
-                ref="cropper"
-                :img="option.img"
-                :outputSize="option.size"
-                :outputType="option.outputType"
-                :info="true"
-                :full="option.full"
-                :canMoveBox="option.canMoveBox"
-                :original="option.original"
-                :autoCrop="option.autoCrop"
-                :fixed="option.fixed"
-                :fixedNumber="option.fixedNumber"
-                :centerBox="option.centerBox"
-                :infoTrue="option.infoTrue"
-                :fixedBox="option.fixedBox"
-                :autoCropWidth="option.autoCropWidth"
-                :autoCropHeight="option.autoCropHeight"
-            />
-        </div>
+        <choose-then-crop-image
+            ref="chooseThenCropImage"
+            :crop-options="cropOptions"
+        />
         <div
             slot="footer"
             class="footer-button"
@@ -68,10 +35,14 @@
 
 <script>
     import api from '@request';
-    import { stateNameSpace, storageNameSpace } from '@nameSpace/storeNameSpace';
+    import { stateNameSpace } from '@nameSpace/storeNameSpace';
+    import chooseThenCropImage from './chooseThenCropImage.vue';
 
     export default {
         name: 'updateAvatar',
+        components: {
+            chooseThenCropImage
+        },
         props: {
             visible: {              // 是否显示更换头像弹窗
                 type: Boolean,
@@ -84,15 +55,14 @@
                 isUploading: false,                 // 是否正在上传图片
                 currentStep: 0,                     // 当前操作步骤
                 // 裁剪组件的基础配置option
-                option: {
-                    img: '', // 裁剪图片的地址
+                cropOptions: {
                     info: true, // 裁剪框的大小信息
                     outputSize: 1, // 裁剪生成图片的质量
                     outputType: 'jpeg', // 裁剪生成图片的格式
                     canScale: true, // 图片是否允许滚轮缩放
                     autoCrop: true, // 是否默认生成截图框
-                    autoCropWidth: '80', // 默认生成截图框宽度
-                    autoCropHeight: '80', // 默认生成截图框高度
+                    autoCropWidth: '100', // 默认生成截图框宽度
+                    autoCropHeight: '100', // 默认生成截图框高度
                     fixedBox: true, // 固定截图框大小 不允许改变
                     fixed: true, // 是否开启截图框宽高固定比例
                     fixedNumber: [1, 1], // 截图框的宽高比例
@@ -105,25 +75,16 @@
             };
         },
         methods: {
-            // 上传按钮   限制图片大小
-            changeUpload(file) {
-                const isLt5M = file.size / 1024 / 1024 < 5
-                if (!isLt5M) {
-                    this.$message.error('上传文件大小不能超过 5MB!')
-                    return false
-                }
-                // 上传成功后将图片地址赋值给裁剪框显示图片
-                const localUrl = URL.createObjectURL(file.raw);
-                this.option.img = localUrl;
-                this.currentStep = 1;
-            },
             // 下一步/确认
             confirm () {
-                if (this.currentStep === 0) return this.$message.info('请先上传图片');
-                this.$refs.cropper.getCropBlob(blobData => {
-                    console.log(blobData)
-                    this.saveAvatar(blobData);
-                })
+                this.$refs.chooseThenCropImage
+                    .nextStep()
+                    .then(blobData => {
+                        this.saveAvatar(blobData);
+                    })
+                    .catch(error => {
+                        this.$message.error(error);
+                    });
             },
             // 取消
             cancel () {
@@ -141,7 +102,7 @@
                 api.updateUserImage(formData)
                     .then(result => {
                         this.$emit('updatedAvatar', result);
-                        this.message.success({ title: '提示', message: '上传成功' });
+                        this.message.success({ title: '成功', message: '头像已修改' });
                         this.isShowModal = false;
                     })
                     .catch(err => {
@@ -151,11 +112,6 @@
                         this.isUploading = false;
                     });
             },
-            // 重置组件状态
-            resetComponent () {
-                this.currentStep = 0;
-            },
-
         },
         watch: {
             visible (newValue) {
@@ -174,7 +130,7 @@
 </script>
 
 <style scoped lang="scss">
-    .modify-header-modal {
+    .upload-avatar-modal {
         .footer-button {
             display: flex;
             justify-content: center;
@@ -182,9 +138,5 @@
                 width: 120px;
             }
         }
-    }
-    .cropper-content {
-        width: auto;
-        height: 300px;
     }
 </style>

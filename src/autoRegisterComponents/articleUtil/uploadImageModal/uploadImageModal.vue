@@ -114,6 +114,7 @@
                 formData.append('file', event.file)
                 formData.append('path', 'article');
                 formData.append('type', 'articleImage');
+                formData.append('save', 'true');
                 formData.append('uploaderId', this.userInfo.userId);
                 api.upload(formData)
                     .then(result => {

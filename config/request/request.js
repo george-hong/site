@@ -44,9 +44,9 @@ const upload = params => {
         transformRequest: []
     });
 };
-// 更新头像
-const updateAvatar = params => {
-    return request.post('api/upload/updateAvatar', params, {
+// 更新用户图片
+const updateUserImage = params => {
+    return request.post('api/upload/updateUserImage', params, {
         // 设置请求类型
         headers: {
             'Accept': '*/*',
@@ -73,7 +73,7 @@ const api = {
     getArticleList,
     search,
     upload,
-    updateAvatar,
+    updateUserImage,
     getUploadFilesInfo,
     uploadImageUrl
 };
@@ -88,7 +88,7 @@ export {
     getArticleList,
     search,
     upload,
-    updateAvatar,
+    updateUserImage,
     getUploadFilesInfo,
     uploadImageUrl
 };

@@ -4,7 +4,7 @@
             <div class="w no-padding">
                 <div
                     class="header-area"
-                    :style="{'background-image': `url(${headerBackgroundImage})`}"
+                    :style="{'background-image': `url(${userBaseInfo.backgroundImage})`}"
                 >
                     <div class="left">
                         <div class="avatar-container">
@@ -53,6 +53,7 @@
                         <el-button
                             type="primary"
                             size="small"
+                            @click="showModifyBackground"
                         >
                             更换背景
                         </el-button>
@@ -64,8 +65,12 @@
 
         </div>
         <update-avatar
-            :visible.sync="isShowModifyAvatar"
+            :visible.sync="isShowUpdateAvatar"
             @updatedAvatar="onUpdateAvatar"
+        />
+        <update-background-image
+            :visible.sync="isShowUpdateBackgroundImage"
+            @updatedBackgroundImage="onUpdateBackgroundImage"
         />
     </div>
 </template>
@@ -74,31 +79,44 @@
     import { stateNameSpace, commitNameSpace } from '@nameSpace/storeNameSpace';
     import storageNameSpace from '@nameSpace/storageNameSpace';
     import updateAvatar from './components/updateAvatar.vue';
+    import updateBackgroundImage from './components/updateBackgroundImage.vue';
     import api from '@request';
 
     export default {
         name: 'personCenterPage',
         components: {
-            updateAvatar
+            updateAvatar,
+            updateBackgroundImage
         },
         data () {
             return {
-                headerBackgroundImage: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2929358784,3767512518&fm=26&gp=0.jpg',                // 头像背景图
-                isShowModifyAvatar: false,                      // 是否展示更换头像窗口
+                isShowUpdateAvatar: false,                      // 是否展示更换头像窗口
+                isShowUpdateBackgroundImage: false,             // 是否展示更换背景窗口
                 isEditUserInfo: false,                          // 是否正在编辑用户基本信息
                 userBaseInfo: {                                 // 用户基本信息
-                    userName: ''
+                    userName: '',                               // 修改用的用户名称
+                    backgroundImage: ''                         // 修改用的背景图
                 }
             };
         },
         methods: {
             // 展示更换头像窗口
             showModifyAvatar () {
-                this.isShowModifyAvatar = true;
+                this.isShowUpdateAvatar = true;
+            },
+            // 展示更换背景窗口
+            showModifyBackground () {
+                this.isShowUpdateBackgroundImage = true;
             },
             // 更新头像后执行
             onUpdateAvatar (imageInfo) {
                 this.updateLocalUserInfo({ avatar: imageInfo.url });
+            },
+            // 更新背景后执行
+            onUpdateBackgroundImage (imageInfo) {
+                console.log('update image')
+                this.userBaseInfo.backgroundImage = imageInfo.url;
+                this.updateLocalUserInfo({ backgroundImage: imageInfo.url });
             },
             // 开始编辑用户基本信息
             startEditUserBaseInfo () {
@@ -158,7 +176,12 @@
             userInfo () {
                 return this.$store.state[stateNameSpace.userInfo] || {};
             }
-        }
+        },
+        watch: {
+            userInfo (newValue) {
+                if (newValue && newValue.backgroundImage) this.userBaseInfo.backgroundImage = newValue.backgroundImage;
+            }
+        },
     }
 </script>
 

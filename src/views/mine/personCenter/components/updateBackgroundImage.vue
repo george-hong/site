@@ -1,8 +1,8 @@
 <template>
     <el-dialog
-        width="400px"
+        width="1000px"
         :visible.sync="isShowModal"
-        title="修改头像"
+        title="修改背景图"
         custom-class="modify-header-modal"
         destroy-on-close
         :show-close="false"
@@ -71,7 +71,7 @@
     import { stateNameSpace, storageNameSpace } from '@nameSpace/storeNameSpace';
 
     export default {
-        name: 'updateAvatar',
+        name: 'updateBackgroundImage',
         props: {
             visible: {              // 是否显示更换头像弹窗
                 type: Boolean,
@@ -91,11 +91,11 @@
                     outputType: 'jpeg', // 裁剪生成图片的格式
                     canScale: true, // 图片是否允许滚轮缩放
                     autoCrop: true, // 是否默认生成截图框
-                    autoCropWidth: '80', // 默认生成截图框宽度
-                    autoCropHeight: '80', // 默认生成截图框高度
+                    autoCropWidth: '1000', // 默认生成截图框宽度
+                    autoCropHeight: '200', // 默认生成截图框高度
                     fixedBox: true, // 固定截图框大小 不允许改变
                     fixed: true, // 是否开启截图框宽高固定比例
-                    fixedNumber: [1, 1], // 截图框的宽高比例
+                    fixedNumber: [5, 1], // 截图框的宽高比例
                     full: false, // 是否输出原图比例的截图
                     canMoveBox: true, // 截图框能否拖动
                     original: false, // 上传图片按照原始比例渲染
@@ -135,13 +135,13 @@
                 this.isUploading = true;
                 const formData = new FormData();
                 formData.append('file', blobData, `${Date.now()}.jpg`);
-                formData.append('path', 'avatar');
-                formData.append('type', 'avatar');
+                formData.append('path', 'backgroundImage');
+                formData.append('type', 'backgroundImage');
                 formData.append('uploaderId', this.userInfo.userId);
                 api.updateUserImage(formData)
                     .then(result => {
-                        this.$emit('updatedAvatar', result);
-                        this.message.success({ title: '提示', message: '上传成功' });
+                        this.$emit('updatedBackgroundImage', result);
+                        this.message.success({ title: '提示', message: '修改成功' });
                         this.isShowModal = false;
                     })
                     .catch(err => {

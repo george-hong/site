@@ -1,0 +1,107 @@
+<template>
+    <div class="person-center-page">
+        <!-- 顶部背景栏 -->
+        <div class="w no-padding">
+            <div
+                class="header-area"
+                :style="{'background-image': `url(${userInfo.backgroundImage})`}"
+            />
+        </div>
+        <!-- 用户信息 -->
+        <div class="w base-info">
+            <div class="left">
+                <div class="avatar-container">
+                    <img :src="userInfo.avatar" />
+                </div>
+            </div>
+            <div class="right">
+                <span class="name-line">
+                    <span class="user-name">
+                        {{userInfo.userName}}
+                    </span>
+                    <el-button
+                        class="fr edit-button"
+                        size="small"
+                        type="text"
+                        @click="goEditPersonInfo"
+                    >
+                        <i class="el-icon-edit-outline" />
+                        <span>编辑个人信息</span>
+                    </el-button>
+                </span>
+                <span
+                    class="introduction-line"
+                    v-if="userInfo.introduction"
+                >
+                    {{userInfo.introduction}}
+                </span>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    import { stateNameSpace } from '@nameSpace/storeNameSpace';
+
+    export default {
+        name: 'personCenterPage',
+        data () {
+            return {
+                currentTab: 'userInfo'
+            };
+        },
+        methods: {
+            // 跳转编辑信息页面
+            goEditPersonInfo () {
+                this.$router.push({ name: 'personCenterEdit' });
+            }
+        },
+        computed: {
+            userInfo () {
+                return this.$store.state[stateNameSpace.userInfo] || {};
+            }
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    @import '../common/style/personCenter.scss';
+    .person-center-page {
+        .edit-button {
+            padding: 0;
+        }
+        .base-info {
+            display: flex;
+            .left {
+                width: 80px;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+            }
+            .right {
+                width: calc(100% - 80px);
+                min-height: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                padding-left: 15px;
+                align-items: center;
+                align-content: center;
+                .name-line {
+                    display: block;
+                    width: 100%;
+                    span {
+                        &:first-child {
+                            font-size: 20px;
+                            line-height: 24px;
+                            font-weight: 700;
+                            color: #333;
+                        }
+                    }
+                }
+                .introduction-line {
+                    margin-top: 10px;
+                }
+            }
+        }
+    }
+</style>

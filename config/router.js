@@ -4,7 +4,8 @@ import ArticleList from '../src/views/article/list/list.vue';
 import ArticleDetail from '../src/views/article/detail/detail.vue';
 import ArticleEdit from '../src/views/article/edit/edit.vue';
 import Login from '../src/views/mine/login/login.vue';
-import PersonCenter from '../src/views/mine/personCenter/personalCenter.vue';
+import PersonCenterEdit from '../src/views/mine/personCenter/personalCenterEdit.vue';
+import PersonCenterDetail from '../src/views/mine/personCenter/personalCenterDetail.vue';
 import Sign from '../src/views/sign/sign.vue';
 import DictionaryManage from '../src/views/system/dictionaryManage.vue';
 import Search from '../src/views/search/search.vue';
@@ -23,9 +24,14 @@ const routes = [
         component: Login,
     },
     {
-        name: 'personCenter',
-        path: '/mine/personCenter',
-        component: PersonCenter,
+        name: 'personCenterDetail',
+        path: '/mine/personCenter/detail',
+        component: PersonCenterDetail,
+    },
+    {
+        name: 'personCenterEdit',
+        path: '/mine/personCenter/edit',
+        component: PersonCenterEdit,
     },
     {
         name: 'sign',

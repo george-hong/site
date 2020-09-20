@@ -11,6 +11,7 @@ import { commitNameSpace, stateNameSpace } from '@nameSpace/storeNameSpace';
 import 'element-ui/lib/theme-chalk/index.css';
 import './src/common/style/reset.scss';
 import './src/common/style/common.scss';
+import './src/common/style/project.scss';
 
 // 自动注册组件
 const autoRegisterBaseComponents = () => {

@@ -127,13 +127,26 @@
                     localStorage.removeItem(storageNameSpace.userInfo);
                     localStorage.removeItem(storageNameSpace.token);
                     localStorage.removeItem(storageNameSpace.tokenExpiresTime);
+                    this.message.info({
+                        title: '已自动登出',
+                        message: '您的登录信息已失效，请重新登录。'
+                    });
+                    this.$router.push({ name: 'root' });
                     return; //
                 }
                 try {
                     const userInfo = JSON.parse(localUserInfo);
                     this.$store.commit(commitNameSpace.saveUserInfo, userInfo);
                 } catch (err) {
-                    // 读取本地用户信息异常,不进行操作
+                    // 读取失败
+                    // 读取本地用户信息异常.清空用户信息并退出到首页
+                    // localStorage.removeItem(storageNameSpace.userInfo);
+                    // this.$store.commit(commitNameSpace.saveUserInfo, null);
+                    // this.message.info({
+                    //     title: '已自动登出',
+                    //     message: '您的登录信息已失效，请重新登录。'
+                    // });
+                    // this.$router.push({ name: 'root' });
                 };
             },
             // 搜索框搜索
@@ -159,7 +172,7 @@
             },
             // 跳转到个人中心页面
             goPersonCenter () {
-                this.$router.push({ name: 'personCenter' });
+                this.$router.push({ name: 'personCenterDetail' });
             }
         },
         mounted() {
@@ -196,11 +209,11 @@
                     display: flex;
                     align-items: center;
                     .avatar-container {
-                        width: 30px;
-                        height: 30px;
+                        width: 32px;
+                        height: 32px;
                         box-sizing: border-box;
                         overflow: hidden;
-                        border-radius: 50%;
+                        border-radius: 2px;
                         img {
                             display: block;
                             width: 100%;

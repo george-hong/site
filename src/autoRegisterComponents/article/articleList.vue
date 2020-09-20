@@ -25,7 +25,6 @@
 </template>
 
 <script>
-    import '../../common/style/common.scss';
     import request from '@request';
     import {isNumber} from '@utilMethods';
 

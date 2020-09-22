@@ -19,7 +19,7 @@
 <script>
     import request from '@request';
     import format from '@format';
-    import moment from 'moment';
+    import dayjs from 'dayjs';
     import { mavonEditor } from "mavon-editor";
     import "mavon-editor/dist/css/index.css";
 
@@ -49,7 +49,7 @@
                         // 更新时间格式
                         const { createTime } = result;
                         if (createTime) {
-                            result.createTimeString = moment(createTime).format(format.dateTimeFormat);
+                            result.createTimeString = dayjs(createTime).format(format.dateTimeFormat);
                         }
                         Object.assign(this.articleDetail, result)
                     })

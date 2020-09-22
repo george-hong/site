@@ -37,17 +37,41 @@
                 </span>
             </div>
         </div>
+        <div class="w">
+            <el-tabs
+                v-model="currentTab"
+                type="card"
+            >
+                <el-tab-pane
+                    label="我的收藏"
+                    name="myCollection"
+                >
+                    我的收藏
+                </el-tab-pane>
+                <el-tab-pane
+                    label="我的文件"
+                    name="myFiles"
+                    lazy
+                >
+                    <my-files />
+                </el-tab-pane>
+            </el-tabs>
+        </div>
     </div>
 </template>
 
 <script>
     import { stateNameSpace } from '@nameSpace/storeNameSpace';
+    import myFiles from '../common/components/myFiles.vue';
 
     export default {
         name: 'personCenterPage',
+        components: {
+            myFiles
+        },
         data () {
             return {
-                currentTab: 'userInfo'
+                currentTab: 'myCollection',
             };
         },
         methods: {

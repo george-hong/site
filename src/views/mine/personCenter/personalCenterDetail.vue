@@ -20,6 +20,7 @@
                         {{userInfo.userName}}
                     </span>
                     <el-button
+                        v-if="isAccountOwner"
                         class="fr edit-button"
                         size="small"
                         type="text"
@@ -42,24 +43,51 @@
 
 <script>
     import { stateNameSpace } from '@nameSpace/storeNameSpace';
+    import { getUserBaseInfo } from '@request';
 
     export default {
         name: 'personCenterPage',
         data () {
             return {
-                currentTab: 'userInfo'
+                currentTab: 'userInfo',         // 当前选择的tab
+                userInfo: {}                    // 当前查看的用户信息
             };
         },
         methods: {
             // 跳转编辑信息页面
             goEditPersonInfo () {
-                this.$router.push({ name: 'personCenterEdit' });
+                this.$router.push({
+                    name: 'personCenterEdit',
+                    query: {
+                        account: this.userInfo.account
+                    }
+                });
+            },
+            // 获取用户基本信息
+            getUserBaseInfo () {
+                const { account } = this.$route.query;
+                console.log('account', account)
+                const requestParams = {
+                    account
+                };
+                getUserBaseInfo(requestParams)
+                    .then(result => {
+                        if (result && result.accountInfo) this.userInfo = result.accountInfo;
+
+                    })
+                    .catch(error => {
+                        console.log('error', error)
+                    });
             }
         },
         computed: {
-            userInfo () {
-                return this.$store.state[stateNameSpace.userInfo] || {};
+            isAccountOwner () {
+                const localUserInfo = this.$store.state[stateNameSpace.userInfo] || {};
+                return localUserInfo.userId === this.userInfo.id;
             }
+        },
+        created () {
+            this.getUserBaseInfo();
         }
     }
 </script>

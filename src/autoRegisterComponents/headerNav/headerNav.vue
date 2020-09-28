@@ -172,7 +172,12 @@
             },
             // 跳转到个人中心页面
             goPersonCenter () {
-                this.$router.push({ name: 'personCenterDetail' });
+                this.$router.push({
+                    name: 'personCenterDetail',
+                    query: {
+                        account: this.userInfo.account
+                    }
+                });
             }
         },
         mounted() {

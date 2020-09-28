@@ -74,11 +74,11 @@
         </div>
         <update-avatar
             :visible.sync="isShowUpdateAvatar"
-            @updatedAvatar="onUpdateAvatar"
+            @updatedAvatar="getUserBaseInfo"
         />
         <update-background-image
             :visible.sync="isShowUpdateBackgroundImage"
-            @updatedBackgroundImage="onUpdateBackgroundImage"
+            @updatedBackgroundImage="getUserBaseInfo"
         />
     </div>
 </template>
@@ -88,7 +88,7 @@
     import storageNameSpace from '@nameSpace/storageNameSpace';
     import updateAvatar from '../common/components/updateAvatar.vue';
     import updateBackgroundImage from '../common/components/updateBackgroundImage.vue';
-    import api from '@request';
+    import { getUserBaseInfo, updateUserBaseInfo } from '@request';
 
     export default {
         name: 'personCenterPage',
@@ -104,7 +104,8 @@
                 userBaseInfo: {                                 // 用户基本信息
                     userName: '',                               // 修改用的用户名称
                     introduction: ''                            // 修改用的用户简介
-                }
+                },
+                userInfo: {}                                    // 服务器存储的用户信息
             };
         },
         methods: {
@@ -116,14 +117,6 @@
             showModifyBackground () {
                 this.isShowUpdateBackgroundImage = true;
             },
-            // 更新头像后执行
-            onUpdateAvatar (imageInfo) {
-                this.updateLocalUserInfo({ avatar: imageInfo.url });
-            },
-            // 更新背景后执行
-            onUpdateBackgroundImage (imageInfo) {
-                this.updateLocalUserInfo({ backgroundImage: imageInfo.url });
-            },
             // 确认更新用户基本信息
             confirmUpdateUserBaseInfo () {
                 if (this.isSubmitting) return;
@@ -131,16 +124,13 @@
                 this.isSubmitting = true;
                 console.log(this.userBaseInfo, this.userInfo, this.userBaseInfo === this.userInfo)
                 const requestParams = {
-                    userId: this.userInfo.userId,
+                    userId: this.userInfo.id,
                     userName: this.userBaseInfo.userName,
                     introduction: this.userBaseInfo.introduction
                 };
-                api.updateUserBaseInfo(requestParams)
+                updateUserBaseInfo(requestParams)
                     .then(result => {
-                        return this.updateLocalUserInfo({
-                            userName: result.userName,
-                            introduction: result.introduction
-                        });
+                        return this.getUserBaseInfo();
                     })
                     .then(userInfo => {
                         this.message.success({ title: '成功', message: '您的基础信息已修改' });
@@ -152,34 +142,32 @@
                         this.isSubmitting = false;
                     })
             },
-            // 更新本地用户信息
-            updateLocalUserInfo (newInfoObject) {
+            // 获取用户基本信息
+            getUserBaseInfo () {
                 return new Promise((resolve, reject) => {
-                    try {
-                        let localUserInfo = JSON.parse(localStorage.getItem(storageNameSpace.userInfo));
-                        localUserInfo = {
-                            ...localUserInfo,
-                            ...newInfoObject
-                        };
-                        localStorage.setItem(storageNameSpace.userInfo, JSON.stringify(localUserInfo));
-                        this.$store.commit(commitNameSpace.saveUserInfo, JSON.parse(JSON.stringify(localUserInfo)));
-                        resolve(localUserInfo);
-                    } catch (err) {
-                        console.log('用户信息更新失败', err);
-                        reject(err);
-                    }
+                    const { account } = this.$route.query;
+                    console.log('account', account)
+                    const requestParams = {
+                        account
+                    };
+                    getUserBaseInfo(requestParams)
+                        .then(result => {
+                            if (result && result.accountInfo) {
+                                this.userInfo = result.accountInfo;
+                                resolve();
+                            } else reject(new Error('未获取到信息'));
+                        })
+                        .catch(error => reject(error));
                 });
             },
         },
-        computed: {
-            userInfo () {
-                return this.$store.state[stateNameSpace.userInfo] || {};
-            }
-        },
-        mounted () {
-            this.userBaseInfo = JSON.parse(JSON.stringify(this.userInfo));
+        created () {
+            this.getUserBaseInfo()
+                .then(() => {
+                    this.userBaseInfo = JSON.parse(JSON.stringify(this.userInfo));
+                })
         }
-    }
+    };
 </script>
 
 <style lang="scss" scoped>

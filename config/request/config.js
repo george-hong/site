@@ -1,6 +1,8 @@
 import axios from 'axios';
 import Qs from 'qs';
 import message from '../message/message';
+import router from '../router';
+import { updateLocalToken } from '../../libs/tokenUtil';
 
 export const serverBaseUrl = 'http://127.0.0.1:3000/'; // 接口请求地址
 const timeout = 150000;                         // 接口超时时间
@@ -30,13 +32,20 @@ function createAxiosInstance(callback) {
     // 配置响应拦截器
     instance.interceptors.response.use(response => {
         const { status, errDetail } = response.data;
+        const { token, responseData } = response.data.data;
+        // 如果服务端返回了token,则需要更新本地的token信息
+        if (token) updateLocalToken(token);
+        console.log('front', token, responseData)
         if (status !== 200) {
             message.error({
                 title: '请求异常',
                 message: errDetail,
             });
+            if (status === 401) {
+                router.push({ name: 'root' });
+            }
         }
-        return response;
+        return responseData;
     });
 
     callback && callback(instance);
@@ -44,7 +53,7 @@ function createAxiosInstance(callback) {
     request.get = function (url, data, config) {
         return new Promise((resolve, reject) => {
             instance.get(url, { params: data}).then(response => {
-                resolve(response.data.data);
+                resolve(response);
             }).catch(function (msg) {
                 reject(msg);
             });
@@ -54,7 +63,7 @@ function createAxiosInstance(callback) {
     request.post = function (url, data, config) {
         return new Promise((resolve, reject) => {
             instance.post(url, data, config).then(response => {
-                resolve(response.data.data);
+                resolve(response);
             }).catch(function (msg) {
                 reject(msg);
             });

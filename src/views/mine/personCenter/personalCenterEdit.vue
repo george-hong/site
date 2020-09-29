@@ -60,7 +60,7 @@
                 </li>
             </ul>
             <div class="footer-button-area">
-                <el-button>
+                <el-button @click="backPeronCenterDetail">
                     返回
                 </el-button>
                 <el-button
@@ -84,8 +84,6 @@
 </template>
 
 <script>
-    import { stateNameSpace, commitNameSpace } from '@nameSpace/storeNameSpace';
-    import storageNameSpace from '@nameSpace/storageNameSpace';
     import updateAvatar from '../common/components/updateAvatar.vue';
     import updateBackgroundImage from '../common/components/updateBackgroundImage.vue';
     import { getUserBaseInfo, updateUserBaseInfo } from '@request';
@@ -116,6 +114,15 @@
             // 展示更换背景窗口
             showModifyBackground () {
                 this.isShowUpdateBackgroundImage = true;
+            },
+            // 返回个人信息页面
+            backPeronCenterDetail () {
+                this.$router.push({
+                    name: 'personCenterDetail',
+                    query: {
+                        account: this.userInfo.account
+                    }
+                })
             },
             // 确认更新用户基本信息
             confirmUpdateUserBaseInfo () {

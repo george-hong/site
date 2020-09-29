@@ -114,9 +114,12 @@
             },
             // 登出
             logout() {
+                // 清除登录相关信息
                 localStorage.removeItem(storageNameSpace.userInfo);
-                localStorage.removeItem(storageNameSpace.tokenInfo);
+                localStorage.removeItem(storageNameSpace.tokenExpiresTime);
+                localStorage.removeItem(storageNameSpace.token);
                 this.$store.commit(commitNameSpace.saveUserInfo, null);
+                // 返回首页
                 this.$router.push({ name: 'root' });
             },
             tryGetUserInfoFromLocalStorage() {

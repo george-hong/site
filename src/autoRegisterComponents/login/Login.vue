@@ -57,6 +57,7 @@
     import request from '@request';
     import { stateNameSpace, commitNameSpace } from '@nameSpace/storeNameSpace';
     import storageNameSpace from '@nameSpace/storageNameSpace';
+    import { updateLocalToken } from '../../../libs/tokenUtil';
     import { mapState } from 'vuex';
 
     export default {
@@ -137,15 +138,13 @@
             },
             loginSuccess(loginInfo) {
                 const { accountInfo, token } = loginInfo;
-                const { tokenValue, expiresTime } = token;
 
                 // 登陆成功后保存用户信息,保存token和token过期时间
                 this.message.success({ title: '登录成功', message: '欢迎' });
                 this.$store.commit(commitNameSpace.saveUserInfo, accountInfo);
                 this.$store.commit(commitNameSpace.toggleShowLoginWindow, false);
                 localStorage.setItem(storageNameSpace.userInfo, JSON.stringify(accountInfo));
-                localStorage.setItem(storageNameSpace.token, tokenValue);
-                localStorage.setItem(storageNameSpace.tokenExpiresTime, expiresTime); // 过期时间仅用于判断头部是否显示用户信息
+                updateLocalToken(token);
             },
             goToSign() {
                 const { path } = this.$route;

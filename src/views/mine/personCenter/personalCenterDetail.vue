@@ -20,6 +20,7 @@
                         {{userInfo.userName}}
                     </span>
                     <el-button
+                        v-if="isAccountOwner"
                         class="fr edit-button"
                         size="small"
                         type="text"
@@ -62,6 +63,8 @@
 
 <script>
     import { stateNameSpace } from '@nameSpace/storeNameSpace';
+    import { getUserBaseInfo } from '@request';
+    import myFiles from '../common/components/myFiles.vue';
 
     export default {
         name: 'personCenterPage',
@@ -70,7 +73,8 @@
         },
         data () {
             return {
-                currentTab: 'userInfo'
+                currentTab: 'myCollection',     // 当前选择的tab
+                userInfo: {}                    // 当前展示的用户信息
             };
         },
         methods: {

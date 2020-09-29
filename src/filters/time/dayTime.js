@@ -1,8 +1,8 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 export default {
   name: 'dayTime',
   filter(value) {
     if (!value) return ' ';
-    return moment(value).format('YYYY-MM-DD HH:mm:ss');
+    return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
   }
 }

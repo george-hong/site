@@ -20,7 +20,6 @@
                         {{userInfo.userName}}
                     </span>
                     <el-button
-                        v-if="isAccountOwner"
                         class="fr edit-button"
                         size="small"
                         type="text"
@@ -38,19 +37,40 @@
                 </span>
             </div>
         </div>
+        <div class="w">
+            <el-tabs
+                v-model="currentTab"
+                type="card"
+            >
+                <el-tab-pane
+                    label="我的收藏"
+                    name="myCollection"
+                >
+                    我的收藏
+                </el-tab-pane>
+                <el-tab-pane
+                    label="我的文件"
+                    name="myFiles"
+                    lazy
+                >
+                    <my-files />
+                </el-tab-pane>
+            </el-tabs>
+        </div>
     </div>
 </template>
 
 <script>
     import { stateNameSpace } from '@nameSpace/storeNameSpace';
-    import { getUserBaseInfo } from '@request';
 
     export default {
         name: 'personCenterPage',
+        components: {
+            myFiles
+        },
         data () {
             return {
-                currentTab: 'userInfo',         // 当前选择的tab
-                userInfo: {}                    // 当前查看的用户信息
+                currentTab: 'userInfo'
             };
         },
         methods: {

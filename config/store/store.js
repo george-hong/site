@@ -32,9 +32,6 @@ const store = new Vuex.Store({
         },
         [commitNameSpace.saveUserInfo](state, payload) {
             // 仅null和对象允许保存
-            console.log('payload');
-            console.log(payload);
-
             if (isObject(payload) || payload === null)
                 state.userInfo = payload;
         },

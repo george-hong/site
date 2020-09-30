@@ -118,9 +118,10 @@
                 formData.append('uploaderId', this.userInfo.userId);
                 api.upload(formData)
                     .then(result => {
-                        console.log('result', result);
-                        this.message.success({ title: '提示', message: '上传成功' });
-                        this.getUploadFilesInfo();
+                        if (result) {
+                            this.message.success({ title: '提示', message: '上传成功' });
+                            this.getUploadFilesInfo();
+                        }
                     })
                     .catch(err => {
                         console.log('err', err);

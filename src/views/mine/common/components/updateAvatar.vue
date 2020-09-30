@@ -101,9 +101,11 @@
                 formData.append('uploaderId', this.userInfo.userId);
                 api.updateUserImage(formData)
                     .then(result => {
-                        this.$emit('updatedAvatar', result);
-                        this.message.success({ title: '成功', message: '头像已修改' });
-                        this.isShowModal = false;
+                        if (result) {
+                            this.$emit('updatedAvatar', result);
+                            this.message.success({ title: '成功', message: '头像已修改' });
+                            this.isShowModal = false;
+                        }
                     })
                     .catch(err => {
                         console.log('err', err);

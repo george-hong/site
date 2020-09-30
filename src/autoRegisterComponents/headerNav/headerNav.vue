@@ -78,8 +78,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
-    import { commitNameSpace } from '@nameSpace/storeNameSpace';
+    import { stateNameSpace, commitNameSpace } from '@nameSpace/storeNameSpace';
     import storageNameSpace from '@nameSpace/storageNameSpace';
 
     export default {
@@ -99,10 +98,6 @@
             blurSearchArea() {
                 this.isSearchAreaActive = false;
             },
-            // 跳转登录页
-            goSign() {
-                this.$router.push('/sign');
-            },
             // 登录
             login() {
                 const instance = this;
@@ -116,7 +111,6 @@
             logout() {
                 // 清除登录相关信息
                 localStorage.removeItem(storageNameSpace.userInfo);
-                localStorage.removeItem(storageNameSpace.tokenExpiresTime);
                 localStorage.removeItem(storageNameSpace.token);
                 this.$store.commit(commitNameSpace.saveUserInfo, null);
                 // 返回首页
@@ -124,32 +118,11 @@
             },
             tryGetUserInfoFromLocalStorage() {
                 const localUserInfo = localStorage.getItem(storageNameSpace.userInfo);
-                const tokenExpiresTime = parseInt(localStorage.getItem(storageNameSpace.tokenExpiresTime));
-                // 如果token已过期，删除用户信息
-                if (tokenExpiresTime < Date.now()) {
-                    localStorage.removeItem(storageNameSpace.userInfo);
-                    localStorage.removeItem(storageNameSpace.token);
-                    localStorage.removeItem(storageNameSpace.tokenExpiresTime);
-                    this.message.info({
-                        title: '已自动登出',
-                        message: '您的登录信息已失效，请重新登录。'
-                    });
-                    this.$router.push({ name: 'root' });
-                    return; //
-                }
                 try {
                     const userInfo = JSON.parse(localUserInfo);
                     this.$store.commit(commitNameSpace.saveUserInfo, userInfo);
                 } catch (err) {
-                    // 读取失败
-                    // 读取本地用户信息异常.清空用户信息并退出到首页
-                    // localStorage.removeItem(storageNameSpace.userInfo);
-                    // this.$store.commit(commitNameSpace.saveUserInfo, null);
-                    // this.message.info({
-                    //     title: '已自动登出',
-                    //     message: '您的登录信息已失效，请重新登录。'
-                    // });
-                    // this.$router.push({ name: 'root' });
+
                 };
             },
             // 搜索框搜索
@@ -170,13 +143,17 @@
             },
             // 判断是否登录后跳转到文章编辑页面
             goArticleEdit () {
-                if (this.userInfo) this.$router.push({ name: 'articleEdit' });
+                const articleEditRouteName = 'articleEdit';
+                if (this.$route.name === articleEditRouteName) return;
+                if (this.userInfo) this.$router.push({ name: articleEditRouteName });
                 else this.login();
             },
             // 跳转到个人中心页面
             goPersonCenter () {
+                const personCenterDetailRouteName = 'personCenterDetail';
+                if (this.$route.name === personCenterDetailRouteName) return;
                 this.$router.push({
-                    name: 'personCenterDetail',
+                    name: personCenterDetailRouteName,
                     query: {
                         account: this.userInfo.account
                     }
@@ -185,12 +162,19 @@
         },
         mounted() {
             this.tryGetUserInfoFromLocalStorage();
+            // 页面刷新时如果读取到了关键字，则更新显示内容
+            if (this.searchKeyWord) this.searchValue = this.searchKeyWord;
         },
         computed: {
-            isShowLoginWindow() {
+            isShowLoginWindow () {
                 return this.$store.state.isShowLoginWindow;
             },
-            ...mapState(['userInfo'])
+            userInfo () {
+                return this.$store.state[stateNameSpace.userInfo];
+            },
+            searchKeyWord () {
+                return this.$store.state[stateNameSpace.searchKeyWord];
+            }
         }
     }
 </script>

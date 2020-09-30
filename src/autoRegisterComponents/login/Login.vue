@@ -57,7 +57,7 @@
     import request from '@request';
     import { stateNameSpace, commitNameSpace } from '@nameSpace/storeNameSpace';
     import storageNameSpace from '@nameSpace/storageNameSpace';
-    import { updateLocalToken } from '../../../libs/tokenUtil';
+    import { updateLocalToken } from '@libs/tokenUtil';
     import { mapState } from 'vuex';
 
     export default {

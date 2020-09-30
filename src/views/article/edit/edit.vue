@@ -29,7 +29,7 @@
 
 <script>
     import { mavonEditor } from "mavon-editor";
-    import { mapState } from 'vuex';
+    import { stateNameSpace } from '@nameSpace/storeNameSpace';
     import request from '@request';
     import "mavon-editor/dist/css/index.css";
     export default {
@@ -98,14 +98,15 @@
 
         },
         computed: {
-            ...mapState(['userInfo'])
+            userInfo () {
+                return this.$store.state[stateNameSpace.userInfo];
+            }
         }
     }
 </script>
 
 <style lang="scss" scoped>
     .article-edit {
-        padding: 20px 0;
         .content-title {
             line-height: 40px;
             padding-left: 10px;

@@ -30,7 +30,8 @@
 
 <script>
     import { search } from '@request';
-    import { stateNameSpace } from '@nameSpace/storeNameSpace';
+    import { stateNameSpace, commitNameSpace } from '@nameSpace/storeNameSpace';
+
     export default {
         name: 'search-page',
         data() {
@@ -66,6 +67,7 @@
             const { keyword } = this.$route.query;
             if (keyword !== undefined) {
                 this.keyword = keyword;
+                return this.$store.commit(commitNameSpace.updateSearchKeyWord, keyword);
                 this.search();
             }
         },

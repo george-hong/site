@@ -16,7 +16,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@libs': resolvePath('src/libs'),
+      '@libs': resolvePath('libs'),
       '@request': resolvePath('config/request/request.js'),
       '@utilMethods': resolvePath('libs/utilMethods.js'),
       '@nameSpace': resolvePath('config/nameSpace'),

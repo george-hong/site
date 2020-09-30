@@ -2,7 +2,7 @@ import axios from 'axios';
 import Qs from 'qs';
 import message from '../message/message';
 import router from '../router';
-import { updateLocalToken } from '../../libs/tokenUtil';
+import { updateLocalToken, clearLocalToken } from '@libs/tokenUtil';
 
 export const serverBaseUrl = 'http://127.0.0.1:3000/'; // 接口请求地址
 const timeout = 150000;                         // 接口超时时间
@@ -31,21 +31,24 @@ function createAxiosInstance(callback) {
 
     // 配置响应拦截器
     instance.interceptors.response.use(response => {
-        const { status, errDetail } = response.data;
-        const { token, responseData } = response.data.data;
+        const { status, errDetail, token, data } = response.data;
         // 如果服务端返回了token,则需要更新本地的token信息
         if (token) updateLocalToken(token);
-        console.log('front', token, responseData)
-        if (status !== 200) {
+        if (status !== 200 && status !== 401) {
             message.error({
                 title: '请求异常',
                 message: errDetail,
             });
-            if (status === 401) {
-                router.push({ name: 'root' });
-            }
         }
-        return responseData;
+        if (status === 401) {
+            message.info({
+                title: '提示',
+                message: '登录信息失效，请重新登录',
+            });
+            clearLocalToken();
+            router.push({ name: 'root' });
+        }
+        return data;
     });
 
     callback && callback(instance);

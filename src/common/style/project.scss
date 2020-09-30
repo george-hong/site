@@ -18,3 +18,8 @@
         min-width: 120px;
     }
 }
+
+// 去除头部撑满高度
+.min-full-height {
+    min-height: calc(100vh - 60px);
+}

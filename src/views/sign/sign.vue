@@ -1,5 +1,5 @@
 <template>
-    <div class="w">
+    <div class="w min-full-height">
         <div class="form-content">
             <el-form ref="signForm"
                      label-width="80px"

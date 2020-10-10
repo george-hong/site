@@ -4,7 +4,8 @@ import message from '../message/message';
 import router from '../router';
 import { updateLocalToken, clearLocalToken } from '@libs/tokenUtil';
 
-export const serverBaseUrl = 'https://localhost/'; // 接口请求地址
+// export const serverBaseUrl = 'https://localhost/'; // 接口请求地址
+export const serverBaseUrl = 'https://hongchangjun.top/'; // 接口请求地址
 const timeout = 150000;                         // 接口超时时间
 
 // 创建axios实例

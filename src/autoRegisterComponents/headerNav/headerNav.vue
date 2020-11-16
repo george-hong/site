@@ -118,9 +118,29 @@
             },
             tryGetUserInfoFromLocalStorage() {
                 const localUserInfo = localStorage.getItem(storageNameSpace.userInfo);
+                const token = localStorage.getItem(storageNameSpace.token);
+                const tokenExpireTime = localStorage.getItem(storageNameSpace.tokenExpireTime);
+                const currentTime = Date.now();
+                const tokenIsCorrect = !!(token && tokenExpireTime && (currentTime < tokenExpireTime));
                 try {
                     const userInfo = JSON.parse(localUserInfo);
-                    this.$store.commit(commitNameSpace.saveUserInfo, userInfo);
+                    if (tokenIsCorrect && userInfo) {
+                        // 正确获取有效用户信息
+                        this.$store.commit(commitNameSpace.saveUserInfo, userInfo);
+                    } else if (tokenIsCorrect && !userInfo) {
+                        // 没有用户信息
+                        this.$store.commit(commitNameSpace.saveUserInfo, null);
+                    } else {
+                        // 用户信息失效
+                        this.$store.commit(commitNameSpace.saveUserInfo, null);
+                        const storageFields = [storageNameSpace.userInfo, storageNameSpace.token, storageNameSpace.tokenExpireTime];
+                        storageFields.forEach(field => localStorage.removeItem(field));
+                        this.message.info({
+                            title: '提示',
+                            message: '用户信息失效，请重新登录'
+                        });
+                        this.$router.push('/');
+                    }
                 } catch (err) {
 
                 };

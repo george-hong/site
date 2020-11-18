@@ -132,14 +132,16 @@
                         this.$store.commit(commitNameSpace.saveUserInfo, null);
                     } else {
                         // 用户信息失效
+                        if (token || tokenExpireTime || localUserInfo) {
+                            this.message.info({
+                                title: '提示',
+                                message: '用户信息失效，请重新登录'
+                            });
+                        }
                         this.$store.commit(commitNameSpace.saveUserInfo, null);
                         const storageFields = [storageNameSpace.userInfo, storageNameSpace.token, storageNameSpace.tokenExpireTime];
                         storageFields.forEach(field => localStorage.removeItem(field));
-                        this.message.info({
-                            title: '提示',
-                            message: '用户信息失效，请重新登录'
-                        });
-                        this.$router.push('/');
+                        if (this.$route.name !== 'root') this.$router.push({ name: 'root' });
                     }
                 } catch (err) {
 

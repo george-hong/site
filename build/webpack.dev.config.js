@@ -5,6 +5,13 @@ const webpack = require('webpack');
 
 module.exports = WebpackMerge(webpackBaseConfig, {
     mode: 'development',
+    devServer: {
+        host: '127.0.0.1',
+        inline: true,
+        hot: true,
+        open: true,
+        port: 90
+    },
     module: {
         rules: [{
             test: /\.css$/,

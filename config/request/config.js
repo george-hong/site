@@ -5,7 +5,7 @@ import router from '../router';
 import { updateLocalToken, clearLocalToken } from '@libs/tokenUtil';
 
 // export const serverBaseUrl = 'https://localhost/'; // 接口请求地址
-export const serverBaseUrl = 'https://hongchangjun.top/'; // 接口请求地址
+export const serverBaseUrl = process.env.NODE_ENV === 'production' ? 'https://hongchangjun.top/' : 'http://127.0.0.1:80'; // 接口请求地址
 const timeout = 150000;                         // 接口超时时间
 
 // 创建axios实例
@@ -13,7 +13,7 @@ function createAxiosInstance(callback) {
     let request = {};
     let instance = axios.create({
         baseURL: serverBaseUrl,
-        timeout: 5000,
+        timeout,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         transformRequest: [function (data) {
             data = Qs.stringify(data);

@@ -40,13 +40,12 @@
                     </el-button>
                     <el-popover
                         v-else
-                        trigger="hover"
+                        trigger="click"
                         popper-class="button-popper"
                     >
                         <div
                             class="avatar-container"
                             slot="reference"
-                            @click="goPersonCenter"
                         >
                             <img
                                 :src="userInfo.avatar"
@@ -73,13 +72,14 @@
                 </li>
             </ul>
         </div>
-        <login :visible="isShowLoginWindow"></login>
+        <login :visible="isShowLoginWindow" />
     </div>
 </template>
 
 <script>
     import { stateNameSpace, commitNameSpace } from '@nameSpace/storeNameSpace';
     import storageNameSpace from '@nameSpace/storageNameSpace';
+    import { clearLocalToken } from '@libs/tokenUtil';
 
     export default {
         name: 'header-nav',
@@ -138,9 +138,7 @@
                                 message: '用户信息失效，请重新登录'
                             });
                         }
-                        this.$store.commit(commitNameSpace.saveUserInfo, null);
-                        const storageFields = [storageNameSpace.userInfo, storageNameSpace.token, storageNameSpace.tokenExpireTime];
-                        storageFields.forEach(field => localStorage.removeItem(field));
+                        clearLocalToken();
                         if (this.$route.name !== 'root') this.$router.push({ name: 'root' });
                     }
                 } catch (err) {
@@ -242,7 +240,6 @@
         }
         .search-area {
             display: flex;
-            width: 200px;
             height: 32px;
             padding: 0 10px;
             border-radius: 16px;
@@ -261,6 +258,9 @@
                 background: none;
                 width: 160px;
                 padding-left: 10px;
+                @media screen and (max-width: 400px) {
+                    width: 120px;
+                }
             }
             i {
                 display: inline-block;

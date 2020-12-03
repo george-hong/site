@@ -43,7 +43,7 @@
     "webpack-merge": "^4.2.2"
   },
   "scripts": {
-    "dev": "webpack-dev-server --config build/webpack.dev.config.js",
+    "dev": "webpack-dev-server --hot --config build/webpack.dev.config.js",
     "build": "webpack --progress --hide-modules --config build/webpack.prod.config.js"
   },
   "repository": {

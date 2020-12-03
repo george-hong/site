@@ -40,8 +40,8 @@
                     </el-button>
                     <el-popover
                         v-else
-                        trigger="click"
                         popper-class="button-popper"
+                        :value="isShowMenu"
                     >
                         <div
                             class="avatar-container"
@@ -50,9 +50,13 @@
                             <img
                                 :src="userInfo.avatar"
                                 :alt="userInfo.userName"
+                                @click.stop="changeMenuShowState(true)"
                             />
                         </div>
-                        <div class="user-hover-button-box">
+                        <div
+                            class="user-hover-button-box"
+                            v-click-other-element="changeMenuShowState"
+                        >
                             <el-button
                                 class="popper-button"
                                 size="small"
@@ -80,16 +84,25 @@
     import { stateNameSpace, commitNameSpace } from '@nameSpace/storeNameSpace';
     import storageNameSpace from '@nameSpace/storageNameSpace';
     import { clearLocalToken } from '@libs/tokenUtil';
+    import clickOtherElement from '../../directives/clickOtherElement';
 
     export default {
         name: 'header-nav',
+        directives: {
+            clickOtherElement
+        },
         data() {
             return {
                 searchValue: '',
                 isSearchAreaActive: false,
+                isShowMenu: false,              // 是否展示个人菜单
             }
         },
         methods: {
+            // 变更菜单显示状态
+            changeMenuShowState(isShow, event) {
+                this.isShowMenu = !!isShow;
+            },
             // 搜索框获取焦点
             focusSearchArea() {
                 this.isSearchAreaActive = true;
@@ -115,6 +128,7 @@
                 this.$store.commit(commitNameSpace.saveUserInfo, null);
                 // 返回首页
                 this.$router.push({ name: 'root' });
+                this.changeMenuShowState();
             },
             tryGetUserInfoFromLocalStorage() {
                 const localUserInfo = localStorage.getItem(storageNameSpace.userInfo);
@@ -170,6 +184,7 @@
             },
             // 跳转到个人中心页面
             goPersonCenter () {
+                this.changeMenuShowState();
                 const personCenterDetailRouteName = 'personCenterDetail';
                 if (this.$route.name === personCenterDetailRouteName) return;
                 this.$router.push({
@@ -259,7 +274,7 @@
                 width: 160px;
                 padding-left: 10px;
                 @media screen and (max-width: 400px) {
-                    width: 120px;
+                    width: 80px;
                 }
             }
             i {

@@ -6,9 +6,9 @@ const webpack = require('webpack');
 module.exports = WebpackMerge(webpackBaseConfig, {
     mode: 'development',
     devServer: {
+        hot: true,
         host: '127.0.0.1',
         inline: true,
-        hot: true,
         open: true,
         port: 90
     },
@@ -37,6 +37,7 @@ module.exports = WebpackMerge(webpackBaseConfig, {
     plugins: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('development')
-        })
+        }),
+        new webpack.HotModuleReplacementPlugin()
     ]
 });

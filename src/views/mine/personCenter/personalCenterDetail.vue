@@ -44,10 +44,10 @@
                 type="card"
             >
                 <el-tab-pane
-                    label="我的收藏"
-                    name="myCollection"
+                    label="我的文章"
+                    name="myArticle"
                 >
-                    我的收藏
+                    <my-article-table :userInfo="userInfo" />
                 </el-tab-pane>
                 <el-tab-pane
                     label="我的文件"
@@ -65,15 +65,17 @@
     import { stateNameSpace } from '@nameSpace/storeNameSpace';
     import { getUserBaseInfo } from '@request';
     import myFiles from '../common/components/myFiles.vue';
+    import MyArticleTable from '../common/components/myArticleTable.vue';
 
     export default {
         name: 'personCenterPage',
         components: {
+            MyArticleTable,
             myFiles
         },
         data () {
             return {
-                currentTab: 'myCollection',     // 当前选择的tab
+                currentTab: 'myArticle',        // 当前选择的tab
                 userInfo: {}                    // 当前展示的用户信息
             };
         },
@@ -97,7 +99,6 @@
                 getUserBaseInfo(requestParams)
                     .then(result => {
                         if (result && result.accountInfo) this.userInfo = result.accountInfo;
-
                     })
                     .catch(error => {
                         console.log('error', error)

@@ -17,10 +17,11 @@
             >
                 <span slot-scope="scope">{{ scope.row.createTime | dayTime }}</span>
             </el-table-column>
-            <el-table-column
-                property="status"
-                label="状态"
-            />
+            <el-table-column label="状态">
+                <template slot-scope="scope">
+                    <span>{{ transformArticleStatus(scope.row.status) }}</span>
+                </template>
+            </el-table-column>
             <el-table-column
                 width="100px"
                 label="操作"
@@ -31,7 +32,11 @@
                         title="编辑"
                         @click="linkToEditArticle(scope)"
                     />
-                    <i class="el-icon-unlock" />
+                    <i
+                        :class="scope.row.status === 'on' ? 'el-icon-lock' : 'el-icon-unlock'"
+                        :title="scope.row.status === 'on' ? '下线' : '上线'"
+                        @click="changeArticleStatus(scope.row)"
+                    />
                 </template>
             </el-table-column>
         </el-table>
@@ -50,8 +55,7 @@
 </template>
 
 <script>
-    import { getArticleList } from '@request';
-    import { stateNameSpace } from '@nameSpace/storeNameSpace';
+    import { getArticleList, changeArticleStatus } from '@request';
 
     export default {
         name: 'myArticleTable',
@@ -60,7 +64,7 @@
                 type: Object
             }
         },
-        data() {
+        data () {
             return {
                 pageConfig: {
                     page: 1,
@@ -68,6 +72,7 @@
                     total: 0
                 },
                 articleList: [],        // 文章列表
+                isSubmitting: false     // 是否正在提交
             }
         },
         methods: {
@@ -83,7 +88,6 @@
                     pageSize,
                     authorId: this.userInfo.id
                 };
-                console.log('params', params)
                 getArticleList(params)
                     .then(result => {
                         const { content, total } = result;
@@ -102,14 +106,37 @@
             },
             onPageChange (page) {
                 this.getMyArticleList({ page });
+            },
+            transformArticleStatus (code) {
+                const codeTransfer = {
+                    on: '在线',
+                    off: '离线'
+                };
+                return codeTransfer[code] || '--';
+            },
+            // 变更文章状态
+            changeArticleStatus (articleInfo) {
+                if (this.isSubmitting) return;
+                this.isSubmitting = true;
+                const requestParams = {
+                    id: articleInfo.id,
+                    status: articleInfo.status === 'on' ? 'off' : 'on'
+                };
+                changeArticleStatus(requestParams)
+                    .then(result => {
+                        this.message.success({ message: '状态更新成功' });
+                        this.getMyArticleList();
+                    })
+                    .finally(() => {
+                        this.isSubmitting = false;
+                    });
             }
         },
-        created() {
+        created () {
 
         },
         watch: {
-            'userInfo.id'(value) {
-                console.log('id', value)
+            'userInfo.id' (value) {
                 if (value >= 0) this.getMyArticleList();
             }
         }
@@ -121,6 +148,7 @@
         i {
             cursor: pointer;
         }
+
         .pagination {
             display: flex;
             justify-content: flex-end;

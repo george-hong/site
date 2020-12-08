@@ -32,15 +32,9 @@ function createAxiosInstance(callback) {
 
     // 配置响应拦截器
     instance.interceptors.response.use(response => {
-        const { status, errDetail, token, data } = response.data;
+        const { status, errDetail, token } = response.data;
         // 如果服务端返回了token,则需要更新本地的token信息
         if (token) updateLocalToken(token);
-        if (status !== 200 && status !== 401) {
-            message.error({
-                title: '请求异常',
-                message: errDetail,
-            });
-        }
         if (status === 401) {
             message.info({
                 title: '提示',
@@ -48,8 +42,15 @@ function createAxiosInstance(callback) {
             });
             clearLocalToken();
             router.push({ name: 'root' });
+            return response.data;
         }
-        return data;
+        if (status !== 200) {
+            message.error({
+                title: '请求异常',
+                message: errDetail,
+            });
+        }
+        return response.data;
     });
 
     callback && callback(instance);
@@ -57,7 +58,9 @@ function createAxiosInstance(callback) {
     request.get = function (url, data, config) {
         return new Promise((resolve, reject) => {
             instance.get(url, { params: data}).then(response => {
-                resolve(response);
+                const { status, errDetail, data } = response;
+                if (status !== 200) reject(errDetail);
+                else resolve(data);
             }).catch(function (msg) {
                 reject(msg);
             });
@@ -67,7 +70,9 @@ function createAxiosInstance(callback) {
     request.post = function (url, data, config) {
         return new Promise((resolve, reject) => {
             instance.post(url, data, config).then(response => {
-                resolve(response);
+                const { status, errDetail, data } = response;
+                if (status !== 200) reject(errDetail);
+                else resolve(data);
             }).catch(function (msg) {
                 reject(msg);
             });

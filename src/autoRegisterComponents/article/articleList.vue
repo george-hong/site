@@ -101,6 +101,7 @@
                     const requestParams = {
                         page: pageNumber,
                         pageSize: this.pageSize,
+                        status: 'on'  // 仅获取在线的文章
                     };
                     request.getArticleList(requestParams)
                         .then(result => {

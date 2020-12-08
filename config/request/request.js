@@ -28,6 +28,10 @@ export const editArticle = params => {
 export const queryArticle = params => {
     return request.get('api/article/detail', params);
 };
+// 变更文章状态
+export const changeArticleStatus = params => {
+    return request.post('api/article/changeStatus', params);
+};
 // 文章列表
 export const getArticleList = params => {
     return request.get('api/article/list', params);
@@ -80,7 +84,8 @@ const api = {
     upload,
     updateUserImage,
     getUploadFilesInfo,
-    uploadImageUrl
+    uploadImageUrl,
+    changeArticleStatus
 };
 
 export default api;

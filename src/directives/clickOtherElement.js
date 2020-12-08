@@ -3,7 +3,6 @@ const clickOtherElement = {
     bind (el, binding) {
         const event = function (e) {
             const isSelf = e.target === el;
-            console.log(binding)
             binding.value && binding.value(isSelf);
         };
         el.__clickEvent__ = event

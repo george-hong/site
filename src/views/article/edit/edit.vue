@@ -30,7 +30,7 @@
 <script>
     import { mavonEditor } from "mavon-editor";
     import { stateNameSpace } from '@nameSpace/storeNameSpace';
-    import request from '@request';
+    import { editArticle, queryArticle } from '@request';
     import "mavon-editor/dist/css/index.css";
     export default {
         components: {
@@ -38,6 +38,7 @@
         },
         data() {
             return {
+                isEdit: this.$route.query.id !== undefined,
                 isSubmitting: false, // 是否正在提交
                 isSubmitted: false,  // 是否提交完成
                 content: '',
@@ -68,8 +69,9 @@
                         author: userInfo.userName,
                         authorId: userInfo.userId,
                     };
+                    if (this.isEdit) requestParams.id = this.$route.query.id,
                     this.isLoading = true;
-                    request.editArticle(requestParams)
+                    editArticle(requestParams)
                         .then(result => {
                             console.log(result);
                             this.isSubmitted = true;
@@ -92,15 +94,53 @@
                     name: 'articleDetail',
                     params: { id },
                 });
+            },
+            // 获取编辑文章的信息
+            getArticleInfo() {
+                const { id } = this.$route.query;
+                if (id !== undefined) {
+                    const requestParams = {
+                        id,
+                    };
+                    queryArticle(requestParams)
+                        .then(result => {
+                            if (result) this.updatePageInfo(result);
+                            else {
+                                this.message.info({ title: '提示', message: '文章不存在' });
+                                this.$router.push({ name: 'articleEdit' });
+                            }
+                        });
+                } else {
+                    this.content = '';
+                    this.form.title = '';
+                }
+            },
+            // 获取文章信息后更新页面信息
+            updatePageInfo(articleInfo) {
+                console.log(articleInfo)
+                const { title, content, authorId } = articleInfo;
+                // 如果不是作者给出提示并跳转页面
+                if (authorId !== this.userInfo.userId) {
+                    this.message.info({ title: '提示', message: '您不是文章作者，已跳转到新增文章页面' });
+                    return this.$router.push({ name: 'articleEdit' });
+                }
+                this.content = content;
+                this.form.title = title;
             }
         },
-        mounted() {
-
+        created() {
+            this.getArticleInfo();
         },
         computed: {
             userInfo () {
                 return this.$store.state[stateNameSpace.userInfo];
             }
+        },
+        watch: {
+            // 文章id变更获取最新文章信息
+            '$route.query.id'() {
+                this.getArticleInfo();
+            },
         }
     }
 </script>

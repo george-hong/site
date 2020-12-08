@@ -86,18 +86,17 @@
                 console.log('params', params)
                 getArticleList(params)
                     .then(result => {
-                        console.log('my', result)
                         const { content, total } = result;
                         this.articleList = content;
                         this.pageConfig.total = total;
                     })
             },
             // 跳转到文章编辑
-            linkToEditArticle (articleInfo) {
+            linkToEditArticle (scope) {
                 this.$router.push({
                     name: 'articleEdit',
                     query: {
-                        id: articleInfo.id
+                        id: scope.row.id
                     }
                 })
             },

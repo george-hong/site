@@ -1,18 +1,19 @@
 <template>
     <div class="my-files-component">
-        <el-steps direction="vertical">
-            <el-step
-                v-for="(fileInfo, fileIndex) in fileList"
-                :key="fileInfo.id"
-                :title="fileInfo.createTime"
-            >
-                <img
-                    slot="description"
-                    :src="fileInfo.url"
-                    @click="previewImage(fileIndex)"
-                />
-            </el-step>
-        </el-steps>
+        <div class="album-block">
+<!--            <p class="album-title">标题区域</p>-->
+            <ul class="album-container">
+                <li
+                    v-for="(fileInfo, fileIndex) in fileList"
+                    :key="fileInfo.id"
+                >
+                    <img
+                        :src="fileInfo.url"
+                        @click="previewImage(fileIndex)"
+                    >
+                </li>
+            </ul>
+        </div>
         <viewer
             class="viewer"
             :images="imageList"
@@ -74,13 +75,32 @@
 
 <style scoped lang="scss">
     .my-files-component {
-        /deep/ .el-step__main {
-            .el-step__description {
-                padding-right: 0;
+        .album-block {
+            .album-title {
+                margin: 10px;
+            }
+            .album-container {
+                display: flex;
+                flex-wrap: wrap;
+                margin-left: -10px;
+                > li {
+                    box-sizing: border-box;
+                    width: 33.333%;
+                    height: 300px;
+                    padding-left: 10px;
+                    margin-bottom: 10px;
+                    img {
+                        max-width: 100%;
+                        max-height: 100%;
+                    }
+                }
             }
         }
         img {
             max-width: 100%;
+        }
+        .viewer {
+            display: none;
         }
     }
 </style>

@@ -54,7 +54,7 @@
             }
         },
         methods: {
-            releaseArticle(isValied) {
+            releaseArticle(isValidated) {
                 this.$refs.form.validate(isValied => {
                     if (this.isSubmitting || this.isSubmitted) return;
                     const tipTitle = '表单验证未通过';
@@ -66,34 +66,30 @@
                     const requestParams = {
                         title: this.form.title,
                         content: this.content,
-                        author: userInfo.userName,
-                        authorId: userInfo.userId,
+                        author: userInfo.userName
                     };
                     if (this.isEdit) requestParams.id = this.$route.query.id,
                     this.isLoading = true;
                     editArticle(requestParams)
                         .then(result => {
-                            console.log(result);
-                            this.isSubmitted = true;
                             this.onSubmitSuccess(result);
-                        })
-                        .catch(err => {
-                            console.log(err);
-                            
                         })
                         .finally(() => {
                             this.isSubmitting = false;
-                        })
+                        });
                 });
             },
             onSubmitSuccess(result) {
-                // 成功后给出提示并跳转到详情页
-                const { id } = result;
-                this.message.success({ title: '上传成功' });
-                this.$router.push({
-                    name: 'articleDetail',
-                    params: { id },
-                });
+                if (result) {
+                    this.isSubmitted = true;
+                    // 成功后给出提示并跳转到详情页
+                    const { id } = result;
+                    this.message.success({ title: '上传成功' });
+                    this.$router.push({
+                        name: 'articleDetail',
+                        params: { id },
+                    });
+                }
             },
             // 获取编辑文章的信息
             getArticleInfo() {
@@ -117,7 +113,6 @@
             },
             // 获取文章信息后更新页面信息
             updatePageInfo(articleInfo) {
-                console.log(articleInfo)
                 const { title, content, authorId } = articleInfo;
                 // 如果不是作者给出提示并跳转页面
                 if (authorId !== this.userInfo.userId) {

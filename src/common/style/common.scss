@@ -95,3 +95,11 @@ a {
     align-items: center;
 }
 
+// 单行文本
+.one-line-text {
+    word-break: break-all;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+

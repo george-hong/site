@@ -5,6 +5,9 @@
                 <li>
                     <router-link to="/">主页</router-link>
                 </li>
+                <li>
+                    <router-link to="/setting">设置</router-link>
+                </li>
                 <li
                     index="/login"
                     class="fr"

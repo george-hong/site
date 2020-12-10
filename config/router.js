@@ -7,8 +7,8 @@ import Login from '../src/views/mine/login/login.vue';
 import PersonCenterEdit from '../src/views/mine/personCenter/personalCenterEdit.vue';
 import PersonCenterDetail from '../src/views/mine/personCenter/personalCenterDetail.vue';
 import Sign from '../src/views/sign/sign.vue';
-import DictionaryManage from '../src/views/system/dictionaryManage.vue';
 import Search from '../src/views/search/search.vue';
+import Setting from '../src/views/setting/setting.vue';
 
 Vue.use(VueRouter);
 
@@ -59,9 +59,9 @@ const routes = [
         component: ArticleEdit,
     },
     {
-        name: 'systemDictionaryManage',
-        path: '/system/dictionaryManage',
-        component: DictionaryManage,
+        name: 'setting',
+        path: '/setting',
+        component: Setting,
     },
 ];
 

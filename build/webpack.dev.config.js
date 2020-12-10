@@ -5,6 +5,7 @@ const webpack = require('webpack');
 
 module.exports = WebpackMerge(webpackBaseConfig, {
     mode: 'development',
+    devtool: 'source-map',
     devServer: {
         hot: true,
         host: '127.0.0.1',

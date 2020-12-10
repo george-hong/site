@@ -6,6 +6,7 @@ import message from './config/message/message';
 import ElementUI from 'element-ui';
 import VueCropper from 'vue-cropper';
 import Viewer from 'v-viewer';
+import utils from './src/utils';
 import 'viewerjs/dist/viewer.css';
 import { commitNameSpace, stateNameSpace } from '@nameSpace/storeNameSpace';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -45,6 +46,7 @@ Vue.prototype.getGlobalId = () => {
   store.commit(commitNameSpace.updateGlobalId);
   return store.state[stateNameSpace.globalId];
 };
+Vue.prototype.utils = utils;
 router.beforeEach((to, from, next) => {
     const { name } = to;
     const matchedNextRoute = routerConfig.find(config => config.name === name);

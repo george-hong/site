@@ -1,9 +1,15 @@
-import router from '../../config/router';
+import regExp from './regExp';
 
-const navigateTo = () => {
-
-};
+const getExistFieldFromParams = (params) => {
+    if (typeof params !== 'object') return null;
+    const result = {};
+    Object.entries(params).forEach(item => {
+        const [key, value] = item;
+        if (value !== '' && value !== undefined) result[key] = value;
+    });
+    return result;
+}
 
 export default {
-    navigateTo
-}
+    regExp
+};

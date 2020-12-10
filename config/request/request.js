@@ -69,6 +69,16 @@ export const getUploadFilesInfo = params => {
     return request.get('api/upload/getUploadFilesByUser', params);
 }
 
+// 新增字典
+export const createDictionary = params => {
+    return request.post('api/dictionary/create', params);
+}
+
+// 查询字典列表
+export const queryDictionaryList = params => {
+    return request.get('api/dictionary/list', params);
+}
+
 export const uploadImageUrl = `${serverBaseUrl}api/upload`;
 
 const api = {
@@ -85,7 +95,8 @@ const api = {
     updateUserImage,
     getUploadFilesInfo,
     uploadImageUrl,
-    changeArticleStatus
+    changeArticleStatus,
+    createDictionary
 };
 
 export default api;

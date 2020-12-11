@@ -3,22 +3,45 @@
         <el-input
             placeholder="请输入搜索内容"
             prefix-icon="el-icon-search"
+            v-model="keyword"
+            @change="searchDictionaryDelay"
         />
-        <ul class="dictionary-list">
-            <li
-                v-for="(dictionaryInfo, dictionaryIndex) in dictionaryList"
-                :key="dictionaryInfo.id"
-            >
-                <p class="one-line-text">{{ dictionaryInfo.name }}</p>
-                <div class="icon-button">
-                    <i class="el-icon-edit-outline" />
-                    <i class="el-icon-delete" />
-                </div>
-            </li>
-        </ul>
+        <scroll-load
+            custom-class="dictionary-scroll-load"
+            :is-finish="isNoMore"
+            :load="queryDictionaryList"
+        >
+            <ul class="dictionary-list">
+                <li
+                    v-for="(dictionaryInfo, dictionaryIndex) in dictionaryList"
+                    :key="dictionaryInfo.id"
+                >
+                    <p class="one-line-text">{{ dictionaryInfo.name }}</p>
+                    <div class="icon-button">
+                        <i
+                            class="el-icon-edit-outline"
+                            @click="startModifyDictionary(dictionaryInfo, dictionaryIndex)"
+                        />
+                        <el-popconfirm
+                            popper-class="delete-dictionary-pop-confirm"
+                            confirm-button-text='确认'
+                            icon="el-icon-info"
+                            icon-color="red"
+                            title="是否确认删除字典？"
+                            @onConfirm="deleteDictionary(dictionaryInfo)"
+                        >
+                            <i
+                                slot="reference"
+                                class="el-icon-delete"
+                            />
+                        </el-popconfirm>
+                    </div>
+                </li>
+            </ul>
+        </scroll-load>
         <el-button
             size="mini"
-            @click="showModifyDictionaryModal"
+            @click="startAddDictionary"
         >
             <span>添加字典</span>
         </el-button>
@@ -32,11 +55,11 @@
 
 <script>
     import modifyDictionaryModal from './modifyDictionaryModal.vue';
-    import { queryDictionaryList } from '@request';
+    import { queryDictionaryList, deleteDictionary } from '@request';
 
     const initPageConfig = {
         page: 1,
-        pageSize: 10
+        pageSize: 15
     };
 
     export default {
@@ -53,14 +76,15 @@
                 },
                 keyword: '',                                // 搜索关键字
                 dictionaryList: [],                         // 字典列表
+                isNoMore: false,                            // 是否加载完成
+                timer: null,
+                isLoading: false,
             };
         },
         methods: {
-            showModifyDictionaryModal() {
-                this.isShowModifyDictionaryModal = true;
-            },
             // 查询字典列表
             queryDictionaryList(isReset) {
+                this.pageConfig.page ++;
                 this.pageConfig = isReset ? { ...initPageConfig } : this.pageConfig;
                 const { page, pageSize } = this.pageConfig;
                 const requestParams = {
@@ -68,28 +92,70 @@
                     pageSize,
                     keyword: this.keyword
                 };
-                queryDictionaryList(requestParams)
+                return queryDictionaryList(requestParams)
                     .then(result => {
+                        const { page, pageSize } = this.pageConfig;
                         const { content, total } = result;
                         this.dictionaryList = isReset ? content : this.dictionaryList.concat(content);
+                        this.isNoMore = (page * pageSize) >= total;
                     });
             },
             // 修改字典后需要重新获取列表
             onChangeDictionaryList(changeInfo) {
                 this.queryDictionaryList(true);
+            },
+            // 删除字典
+            deleteDictionary(dictionaryInfo) {
+                const requestParams = {
+                    id: dictionaryInfo.id
+                };
+                deleteDictionary(requestParams)
+                    .then(result => {
+                        this.message.success({ message: '字典删除成功' });
+                        this.queryDictionaryList(true);
+                    })
+            },
+            // 开始新增字典
+            startAddDictionary() {
+                this.dictionaryInfoEditing = null;
+                this.isShowModifyDictionaryModal = true;
+            },
+            // 开始编辑字典信息
+            startModifyDictionary(dictionaryInfo, dictionaryIndex) {
+                this.dictionaryInfoEditing = dictionaryInfo;
+                this.isShowModifyDictionaryModal = true;
+            },
+            // 延迟搜索字典
+            searchDictionaryDelay() {
+                if (this.timer) {
+                    clearTimeout(this.timer);
+                    this.timer = null;
+                }
+                this.timer = setTimeout(() => {
+                    this.queryDictionaryList(true);
+                }, 200);
             }
         },
         computed: {
 
         },
-        created () {
-            this.queryDictionaryList();
+        created() {
+            this.queryDictionaryList(true);
+        },
+        beforeDestroy() {
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = null;
+            }
         }
     }
 </script>
 
 <style lang="scss" scoped>
     .dictionary-list-component {
+        .dictionary-scroll-load {
+            max-height: 400px;
+        }
         .dictionary-list {
             margin-top: 10px;
             >li {
@@ -102,8 +168,19 @@
                     position: absolute;
                     right: 10px;
                     top: 0;
+                    i {
+                        cursor: pointer;
+                    }
                 }
             }
+        }
+    }
+</style>
+
+<style lang="scss">
+    .delete-dictionary-pop-confirm {
+        .el-popconfirm__action {
+            margin-top: 10px;
         }
     }
 </style>

@@ -11,5 +11,6 @@ const getExistFieldFromParams = (params) => {
 }
 
 export default {
-    regExp
+    regExp,
+    getExistFieldFromParams
 };

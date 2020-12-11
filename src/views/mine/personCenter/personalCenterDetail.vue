@@ -92,7 +92,6 @@
             // 获取用户基本信息
             getUserBaseInfo () {
                 const { account } = this.$route.query;
-                console.log('account', account)
                 const requestParams = {
                     account
                 };
@@ -100,9 +99,6 @@
                     .then(result => {
                         if (result && result.accountInfo) this.userInfo = result.accountInfo;
                     })
-                    .catch(error => {
-                        console.log('error', error)
-                    });
             }
         },
         computed: {

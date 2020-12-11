@@ -107,9 +107,6 @@
                             this.isShowModal = false;
                         }
                     })
-                    .catch(err => {
-                        console.log('err', err);
-                    })
                     .finally(() => {
                         this.isUploading = false;
                     });

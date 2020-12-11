@@ -109,14 +109,9 @@
                 });
             },
             requestSign() {
-                console.log(this.signForm);
                 signRequest(this.signForm)
                     .then(result => {
-                        console.log(result);
                         this.isShowDialog = true;
-                    })
-                    .catch(err => {
-                        console.log(err);
                     })
                     .finally(() => {
                         this.isLoading = false;

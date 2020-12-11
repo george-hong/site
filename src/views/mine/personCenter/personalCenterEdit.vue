@@ -129,7 +129,6 @@
                 if (this.isSubmitting) return;
                 if (!this.userBaseInfo.userName) return this.$messge.info('请输入昵称');
                 this.isSubmitting = true;
-                console.log(this.userBaseInfo, this.userInfo, this.userBaseInfo === this.userInfo)
                 const requestParams = {
                     userId: this.userInfo.id,
                     userName: this.userBaseInfo.userName,
@@ -142,9 +141,6 @@
                     .then(userInfo => {
                         this.message.success({ title: '成功', message: '您的基础信息已修改' });
                     })
-                    .catch(error => {
-                        console.log(error);
-                    })
                     .finally(() => {
                         this.isSubmitting = false;
                     })
@@ -153,7 +149,6 @@
             getUserBaseInfo () {
                 return new Promise((resolve, reject) => {
                     const { account } = this.$route.query;
-                    console.log('account', account)
                     const requestParams = {
                         account
                     };

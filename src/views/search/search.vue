@@ -47,13 +47,9 @@
                 };
                 search(requestParams)
                     .then(result => {
-                        console.log('result', result)
                         const { content } = result;
                         if (content) this.articleList = content;
                     })
-                    .catch(error => {
-                        console.log('search error', error)
-                    });
             },
             viewArticleDetail(article) {
                 const {id} = article;

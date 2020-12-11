@@ -12,12 +12,7 @@
     methods: {
       getInfo() {
         request.testRequest().then(result => {
-          console.log('test result');
-          console.log(result);
-        })
-        .catch(err => {
-          console.log('test err');
-          console.log(err)
+
         })
       }
     },

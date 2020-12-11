@@ -123,9 +123,6 @@
                             this.getUploadFilesInfo();
                         }
                     })
-                    .catch(err => {
-                        console.log('err', err);
-                    });
             },
             // 获取当前用户上传的文件信息
             getUploadFilesInfo () {
@@ -138,9 +135,6 @@
                         const { content } = result;
                         if (content && content.length) this.uploadFileInfo = content;
                     })
-                    .catch(error => {
-                        console.log(`文件信息获取异常:${error}`);
-                    });
             },
             // 重置工具状态
             resetComponent () {

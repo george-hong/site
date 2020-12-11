@@ -74,6 +74,16 @@ export const createDictionary = params => {
     return request.post('api/dictionary/create', params);
 }
 
+// 更新字典
+export const updateDictionary = params => {
+    return request.post('api/dictionary/update', params);
+}
+
+// 删除字典
+export const deleteDictionary = params => {
+    return request.post('api/dictionary/delete', params);
+}
+
 // 查询字典列表
 export const queryDictionaryList = params => {
     return request.get('api/dictionary/list', params);

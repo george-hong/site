@@ -5,6 +5,7 @@
         :title="data ? '编辑字典' : '新增字典'"
         :visible="isShow"
         destroy-on-close
+        :show-close="false"
     >
         <el-form
             :model="formData"
@@ -57,7 +58,7 @@
 </template>
 
 <script>
-    import { createDictionary } from '@request';
+    import { createDictionary, updateDictionary } from '@request';
 
     const initFormData = {
         name: '',                   // 字典名称
@@ -100,7 +101,8 @@
             validateThenSubmitForm () {
                 this.$refs.formRef.validate()
                     .then(result => {
-                        this.requestCreateDictionary();
+                        if (this.data) this.requestUpdateDictionary();
+                        else this.requestCreateDictionary();
                     });
             },
             requestCreateDictionary () {
@@ -109,11 +111,30 @@
                 };
                 createDictionary(requestParams)
                     .then(result => {
-                        this.message.success({ message: `字典${this.data ? '编辑' : '新增'}成功` });
+                        this.message.success({ message: '字典新增成功' });
                         this.isShow = false;
                         // 通知父组件修改成功
                         this.$emit('onChange', {
-                            type: this.data ? 'modify' : 'add',
+                            type: 'modify',
+                            result
+                        });
+                    });
+            },
+            requestUpdateDictionary() {
+                const { name, sign, description } = this.formData
+                const requestParams = this.utils.getExistFieldFromParams({
+                    name,
+                    sign,
+                    description,
+                    id: this.data.id
+                });
+                updateDictionary(requestParams)
+                    .then(result => {
+                        this.message.success({ message: '字典编辑成功' });
+                        this.isShow = false;
+                        // 通知父组件修改成功
+                        this.$emit('onChange', {
+                            type: 'add',
                             result
                         });
                     });
@@ -138,6 +159,7 @@
 
 <style lang="scss">
     .modify-dictionary-modal {
+        max-width: 375px;
         .el-dialog__body {
             padding-bottom: 0;
         }

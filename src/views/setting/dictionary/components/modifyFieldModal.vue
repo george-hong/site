@@ -1,8 +1,8 @@
 <template>
     <el-dialog
         center
-        custom-class="modify-dictionary-modal"
-        :title="data ? '编辑字典' : '新增字典'"
+        custom-class="modify-field-modal"
+        :title="data ? '编辑字段' : '添加字段'"
         :visible="isShow"
         destroy-on-close
         :show-close="false"
@@ -11,31 +11,38 @@
             :model="formData"
             :rules="rules"
             ref="formRef"
-            class="modify-dictionary-form"
+            class="modify-field-form"
             labelWidth="80px"
         >
             <el-form-item
-                label="字典名称"
-                prop="name"
+                label="字段名称"
+                prop="fieldName"
             >
                 <el-input
-                    v-model="formData.name"
+                    v-model="formData.fieldName"
                     :maxLength="fieldMaxLength"
                 />
             </el-form-item>
             <el-form-item
-                label="字典标识"
-                prop="sign"
+                label="字段编码"
+                prop="fieldCode"
                 :maxLength="fieldMaxLength"
             >
-                <el-input v-model="formData.sign" />
+                <el-input v-model="formData.fieldCode" />
             </el-form-item>
             <el-form-item
-                label="字典描述"
-                prop="description"
+                label="额外编码"
+                prop="fieldExtraCode"
+                :maxLength="fieldMaxLength"
+            >
+                <el-input v-model="formData.fieldExtraCode" />
+            </el-form-item>
+            <el-form-item
+                label="备注"
+                prop="remark"
                 :maxLength="remarkMaxLength"
             >
-                <el-input v-model="formData.description" />
+                <el-input v-model="formData.remark" />
             </el-form-item>
         </el-form>
         <div
@@ -58,24 +65,29 @@
 </template>
 
 <script>
-    import { createDictionary, updateDictionary } from '@request';
+    import { createDictionaryField, updateDictionaryField } from '@request';
 
     const initFormData = {
-        name: '',                   // 字典名称
-        sign: '',                   // 字典标识
-        description: ''             // 字典描述
+        fieldName: '',                   // 字段名称
+        fieldCode: '',                   // 字段编码
+        fieldExtraCode: '',              // 字段额外编码
+        remark: ''                       // 备注
     };
 
     export default {
         name: 'modify-dictionary-modal',
         props: {
-            visible: {
+            visible: {              // 弹窗是否可见
                 type: Boolean,
                 default: false
             },
-            data: {
+            data: {                 // 字段信息
                 type: Object,
                 default: null
+            },
+            dictionaryInfo: {       // 字典信息
+                type: Object,
+                default: () => ({})
             }
         },
         data () {
@@ -85,13 +97,16 @@
                 isShow: this.visible,           // 是否展示弹窗
                 formData: { ...initFormData },  // 表单信息
                 rules: {
-                    name: [
-                        { required: true, message: '请输入字典名称' },
-                        { pattern: this.utils.regExp.letterOrChineseAndNotStartWithNumber, message: '字典名称只能使用中文、字母、数字，且不能以数字开头' },
+                    fieldName: [
+                        { required: true, message: '请输入字段名称' },
+                        { pattern: this.utils.regExp.letterOrChineseAndNotStartWithNumber, message: '字段名称只能使用中文、字母、数字，且不能以数字开头' },
                     ],
-                    sign: [
-                        { required: true, message: '请输入字典标识' },
-                        { pattern: this.utils.regExp.LetterNumberUnderline, message: '字典标识只能使用字母、数字、下划线' },
+                    fieldCode: [
+                        { required: true, message: '请输入字段编码' },
+                        { pattern: this.utils.regExp.LetterNumberUnderline, message: '字段编码只能使用字母、数字、下划线' },
+                    ],
+                    fieldExtraCode: [
+                        { pattern: this.utils.regExp.LetterNumberUnderline, message: '字段额外编码只能使用字母、数字、下划线' },
                     ],
                 },
             }
@@ -101,40 +116,43 @@
             validateThenSubmitForm () {
                 this.$refs.formRef.validate()
                     .then(result => {
-                        if (this.data) this.requestUpdateDictionary();
-                        else this.requestCreateDictionary();
+                        if (this.data) this.requestUpdateDictionaryField();
+                        else this.requestCreateDictionaryField();
                     });
             },
-            requestCreateDictionary () {
-                const requestParams = {
-                    ...this.formData
-                };
-                createDictionary(requestParams)
-                    .then(result => {
-                        this.message.success({ message: '字典新增成功' });
-                        this.isShow = false;
-                        // 通知父组件修改成功
-                        this.$emit('onChange', {
-                            type: 'modify',
-                            result
-                        });
-                    });
-            },
-            requestUpdateDictionary() {
-                const { name, sign, description } = this.formData
+            requestCreateDictionaryField() {
                 const requestParams = this.utils.getExistFieldFromParams({
-                    name,
-                    sign,
-                    description,
-                    id: this.data.id
+                    dicId: this.dictionaryInfo.id,
+                    ...this.formData
                 });
-                updateDictionary(requestParams)
+                createDictionaryField(requestParams)
                     .then(result => {
-                        this.message.success({ message: '字典编辑成功' });
+                        this.message.success({ message: '字段添加成功' });
                         this.isShow = false;
                         // 通知父组件修改成功
                         this.$emit('onChange', {
                             type: 'add',
+                            result
+                        });
+                    });
+            },
+            requestUpdateDictionaryField() {
+                const { fieldName, fieldCode, fieldExtraCode, remark } = this.formData
+                const requestParams = this.utils.getExistFieldFromParams({
+                    dicId: this.dictionaryInfo.id,
+                    fieldName,
+                    fieldCode,
+                    fieldExtraCode,
+                    remark,
+                    id: this.data.id
+                });
+                updateDictionaryField(requestParams)
+                    .then(result => {
+                        this.message.success({ message: '字段编辑成功' });
+                        this.isShow = false;
+                        // 通知父组件修改成功
+                        this.$emit('onChange', {
+                            type: 'modify',
                             result
                         });
                     });
@@ -158,13 +176,13 @@
 </script>
 
 <style lang="scss">
-    .modify-dictionary-modal {
+    .modify-field-modal {
         min-width: 375px;
         max-width: 450px;
         .el-dialog__body {
             padding-bottom: 0;
         }
-        .modify-dictionary-form {
+        .modify-field-form {
             padding-right: 5px;
         }
     }

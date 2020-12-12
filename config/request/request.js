@@ -89,6 +89,27 @@ export const queryDictionaryList = params => {
     return request.get('api/dictionary/list', params);
 }
 
+// 查询字典字段列表
+export const queryDictionaryFieldList = params => {
+    return request.get('api/dictionaryField/list', params);
+}
+
+// 新增字典字段
+export const createDictionaryField = params => {
+    return request.post('api/dictionaryField/create', params);
+}
+
+// 更新字典字段
+export const updateDictionaryField = params => {
+    return request.post('api/dictionaryField/update', params);
+}
+
+// 删除字典字段
+export const deleteDictionaryField = params => {
+    return request.post('api/dictionaryField/delete', params);
+}
+
+
 export const uploadImageUrl = `${serverBaseUrl}api/upload`;
 
 const api = {

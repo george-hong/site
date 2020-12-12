@@ -1,10 +1,10 @@
 <template>
     <div class="dictionary-page">
         <div class="left">
-            <dictionary-list />
+            <dictionary-list @choose="onChooseDictionary"/>
         </div>
         <div class="right">
-            <dictionary-table />
+            <dictionary-table :dictionaryInfo="dictionaryInfo" />
         </div>
     </div>
 </template>
@@ -21,11 +21,14 @@
         },
         data () {
             return {
-
+                dictionaryInfo: null
             };
         },
         methods: {
-
+            // 选中字典后执行
+            onChooseDictionary(dictionaryInfo) {
+                this.dictionaryInfo = dictionaryInfo;
+            }
         },
         computed: {
 

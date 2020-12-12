@@ -14,9 +14,17 @@
             <ul class="dictionary-list">
                 <li
                     v-for="(dictionaryInfo, dictionaryIndex) in dictionaryList"
+                    :class="{'active': selectedIndex === dictionaryIndex}"
                     :key="dictionaryInfo.id"
                 >
-                    <p class="one-line-text">{{ dictionaryInfo.name }}</p>
+                    <p class="one-line-text">
+                        <span
+                            class="dictionary-name"
+                            @click="chooseDictionary(dictionaryInfo, dictionaryIndex)"
+                        >
+                            {{ dictionaryInfo.name }}
+                        </span>
+                    </p>
                     <div class="icon-button">
                         <i
                             class="el-icon-edit-outline"
@@ -78,7 +86,8 @@
                 dictionaryList: [],                         // 字典列表
                 isNoMore: false,                            // 是否加载完成
                 timer: null,
-                isLoading: false,
+                isLoading: false,                           // 是否正在加载
+                selectedIndex: 0,                           // 选中的字典索引
             };
         },
         methods: {
@@ -98,6 +107,8 @@
                         const { content, total } = result;
                         this.dictionaryList = isReset ? content : this.dictionaryList.concat(content);
                         this.isNoMore = (page * pageSize) >= total;
+                        if (isReset && content && content.length) this.chooseDictionary(content[0], 0);
+                        else if (isReset && (!content || !content.length)) this.chooseDictionary(null);
                     });
             },
             // 修改字典后需要重新获取列表
@@ -134,6 +145,11 @@
                 this.timer = setTimeout(() => {
                     this.queryDictionaryList(true);
                 }, 200);
+            },
+            // 选中字典
+            chooseDictionary(dictionary, dictionaryIndex) {
+                this.selectedIndex = dictionaryIndex;
+                this.$emit('choose', dictionary);
             }
         },
         computed: {
@@ -159,6 +175,12 @@
         .dictionary-list {
             margin-top: 10px;
             >li {
+                &.active {
+                    background: #E4E4E4;
+                }
+                .dictionary-name {
+                    cursor: pointer;
+                }
                 position: relative;
                 padding-right: 50px;
                 padding-left: 10px;

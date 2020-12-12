@@ -3,10 +3,10 @@
         <div class="header-nav">
             <ul class="w menu-list">
                 <li>
-                    <router-link to="/">主页</router-link>
-                </li>
-                <li>
-                    <router-link to="/setting">设置</router-link>
+                    <i
+                        class="el-icon-menu"
+                        @click="openNavMenu"
+                    />
                 </li>
                 <li
                     index="/login"
@@ -80,6 +80,23 @@
             </ul>
         </div>
         <login :visible="isShowLoginWindow" />
+        <el-drawer
+            :visible.sync="isShowNav"
+            :with-header="false"
+            direction="ltr"
+        >
+            <ul class="nav-menu-list">
+                <li @click="linkToRouter('root')">
+                    <i class="el-icon-s-home" />
+                    <span>首页</span>
+                </li>
+                <li @click="linkToRouter('setting')">
+                    <i class="el-icon-s-tools" />
+                    <span>设置</span>
+<!--                    <router-link to="/setting">设置</router-link>-->
+                </li>
+            </ul>
+        </el-drawer>
     </div>
 </template>
 
@@ -99,9 +116,14 @@
                 searchValue: '',
                 isSearchAreaActive: false,
                 isShowMenu: false,              // 是否展示个人菜单
+                isShowNav: false,               // 是否展示导航菜单
             }
         },
         methods: {
+            // 展开导航菜单
+            openNavMenu() {
+                this.isShowNav = true;
+            },
             // 变更菜单显示状态
             changeMenuShowState(isShow, event) {
                 this.isShowMenu = !!isShow;
@@ -196,6 +218,12 @@
                         account: this.userInfo.account
                     }
                 });
+            },
+            // 跳转到指定路由
+            linkToRouter(routerName) {
+                this.isShowNav = false;
+                if (this.$route.name === routerName) return;
+                this.$router.push({ name: routerName });
             }
         },
         mounted() {
@@ -304,6 +332,23 @@
                 width: 100%;
                 margin: 0;
                 border: none;
+            }
+        }
+    }
+</style>
+
+<style lang="scss">
+    .nav-menu-list {
+        > li {
+            padding-left: 20px;
+            border-bottom: 1px solid #DDD;
+            cursor: pointer;
+            i, span {
+                line-height: 60px;
+            }
+            i {
+                display: inline-block;
+                margin-right: 8px;
             }
         }
     }

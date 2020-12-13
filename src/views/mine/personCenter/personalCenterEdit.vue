@@ -58,6 +58,29 @@
                         />
                     </div>
                 </li>
+                <li>
+                    <div class="left">
+                        <span>相册标签</span>
+                    </div>
+                    <div class="right">
+                        <el-select
+                            v-model="userBaseInfo.albumDicId"
+                            filterable
+                            :remote-method="searchDictionary"
+                            remote
+                            reserve-keyword
+                            placeholder="请输入关键词"
+                            :loading="isLoadingDictionary"
+                        >
+                            <el-option
+                                v-for="dictionaryInfo in dictionaryList"
+                                :key="dictionaryInfo.id"
+                                :value="dictionaryInfo.id + ''"
+                                :label="dictionaryInfo.name"
+                            />
+                        </el-select>
+                    </div>
+                </li>
             </ul>
             <div class="footer-button-area">
                 <el-button @click="backPeronCenterDetail">
@@ -86,7 +109,8 @@
 <script>
     import updateAvatar from '../common/components/updateAvatar.vue';
     import updateBackgroundImage from '../common/components/updateBackgroundImage.vue';
-    import { getUserBaseInfo, updateUserBaseInfo } from '@request';
+    import { getUserBaseInfo, updateUserBaseInfo, queryDictionaryList } from '@request';
+    import storageNameSpace from '../../../../config/nameSpace/storageNameSpace';
 
     export default {
         name: 'personCenterPage',
@@ -101,9 +125,12 @@
                 isShowUpdateBackgroundImage: false,             // 是否展示更换背景窗口
                 userBaseInfo: {                                 // 用户基本信息
                     userName: '',                               // 修改用的用户名称
-                    introduction: ''                            // 修改用的用户简介
+                    introduction: '',                           // 修改用的用户简介
+                    albumDicId: ''                              // 相册关联字典
                 },
-                userInfo: {}                                    // 服务器存储的用户信息
+                userInfo: {},                                   // 服务器存储的用户信息
+                dictionaryList: [],                             // 字典列表
+                isLoadingDictionary: false,                     // 是否正在加载字典
             };
         },
         methods: {
@@ -132,11 +159,15 @@
                 const requestParams = {
                     userId: this.userInfo.id,
                     userName: this.userBaseInfo.userName,
-                    introduction: this.userBaseInfo.introduction
+                    introduction: this.userBaseInfo.introduction,
+                    albumDicId: this.userBaseInfo.albumDicId,
                 };
                 updateUserBaseInfo(requestParams)
                     .then(result => {
-                        return this.getUserBaseInfo();
+                        return this.getUserBaseInfo()
+                            .then(() => {
+                                localStorage.setItem(storageNameSpace.userInfo, JSON.stringify(this.userInfo));
+                            });
                     })
                     .then(userInfo => {
                         this.message.success({ title: '成功', message: '您的基础信息已修改' });
@@ -155,6 +186,8 @@
                     getUserBaseInfo(requestParams)
                         .then(result => {
                             if (result && result.accountInfo) {
+                                const { albumDicId } = result.accountInfo;
+                                result.accountInfo.albumDicId = (albumDicId && albumDicId.toString()) || '';
                                 this.userInfo = result.accountInfo;
                                 resolve();
                             } else reject(new Error('未获取到信息'));
@@ -162,12 +195,32 @@
                         .catch(error => reject(error));
                 });
             },
+            // 延迟搜索字典
+            searchDictionary(keyword) {
+                const requestParams = this.utils.getExistFieldFromParams({
+                    keyword,
+                    page: 1,
+                    pageSize: 20,
+                    status: 'on'
+                });
+                this.isLoadingDictionary = true;
+                return queryDictionaryList(requestParams)
+                    .then(result => {
+                        const { content } = result;
+                        this.dictionaryList = content;
+                    })
+                    .finally(() => {
+                        this.isLoadingDictionary = false;
+                    })
+            }
         },
         created () {
+            this.searchDictionary();
             this.getUserBaseInfo()
                 .then(() => {
+                    localStorage.setItem(storageNameSpace.userInfo, JSON.stringify(this.userInfo));
                     this.userBaseInfo = JSON.parse(JSON.stringify(this.userInfo));
-                })
+                });
         }
     };
 </script>
@@ -192,14 +245,14 @@
                         max-width: 300px;
                     }
                     .left {
-                        width: 80px;
+                        width: 100px;
                         text-align: right;
                         span {
                             color: #999;
                         }
                     }
                     .right {
-                        width: calc(100% - 80px);
+                        width: calc(100% - 100px);
                         box-sizing: border-box;
                         padding-left: 10px;
                     }

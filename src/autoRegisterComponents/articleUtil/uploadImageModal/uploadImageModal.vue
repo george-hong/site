@@ -4,6 +4,7 @@
         append-to-body
         title="上传/查看图片"
         custom-class="upload-image-modal-component"
+        @close="onClose"
     >
         <el-tabs
             v-model="activeTab"
@@ -13,13 +14,48 @@
                 label="上传图片"
                 name="upload"
             >
+                <el-form
+                    ref="photoForm"
+                    label-width="80px"
+                    :model="photoForm"
+                    :rules="photoFormRules"
+                >
+                    <el-form-item
+                        label="图片名称"
+                        prop="fileName"
+                    >
+                        <el-input
+                            v-model="photoForm.fileName"
+                            placeholder="请输入图片名称"
+                            :maxLength="30"
+                        />
+                    </el-form-item>
+                    <el-form-item
+                        label="图片标签"
+                        prop="tags"
+                    >
+                        <el-select
+                            v-model="photoForm.tags"
+                            multiple
+                            collapse-tags
+                            placeholder="请选择图片标签"
+                        >
+                            <el-option
+                                v-for="categoryInfo in tagCategoryList"
+                                :key="categoryInfo.id"
+                                :value="categoryInfo.fieldCode"
+                                :label="categoryInfo.fieldName"
+                            />
+                        </el-select>
+                    </el-form-item>
+                </el-form>
                 <el-upload
                     class="upload-image"
                     drag
                     action=""
                     :http-request="onUpload"
-                    :show-file-list="false"
                     multiple
+                    :show-file-list="false"
                 >
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -59,10 +95,10 @@
                                         </div>
                                         <div
                                             class="bottom flex-content-xy-center"
-                                            @click="copyFileField(fileInfo, 'fileName')"
+                                            @click="showUpdatePhotoModal(fileInfo)"
                                         >
                                             <i class="el-icon-document-copy"/>
-                                            <span>复制文件名</span>
+                                            <span>更新信息</span>
                                         </div>
                                     </div>
                                 </div>
@@ -85,12 +121,24 @@
         >
             <img v-for="src in imageList" :src="src" :key="src">
         </viewer>
+        <update-photo-modal
+            :visible.sync="isShowUpdatePhotoModal"
+            :data="chosenPhoto"
+            :category="tagCategoryList"
+            @change="getUploadFilesInfo"
+        />
     </el-dialog>
 </template>
 
 <script>
-    import api from '@request';
+    import api, { queryDictionaryFieldList } from '@request';
     import {mapState} from "vuex";
+    import storageNameSpace from '@nameSpace/storageNameSpace';
+
+    const initPhotoForm = {
+        fileName: '',
+        tags: ''
+    };
 
     export default {
         name: 'uploadImageModal',
@@ -104,30 +152,49 @@
             return {
                 activeTab: 'upload',                    // 当前激活的标签页
                 uploadFileInfo: [],                     // 已上传的文件信息
-                isShowModal: this.visible               // 是否展示弹窗
+                isShowModal: this.visible,              // 是否展示弹窗
+                photoForm: {                            // 图片信息
+                    ...initPhotoForm
+                },
+                photoFormRules: {
+                    fileName: [{ pattern: this.utils.regExp.letterChineseNumberUnderLine, message: '图片名称只能使用中文、字母、数字、下划线' },]
+                },
+                tagCategoryList: [],                    // 图片分类
+                isShowUpdatePhotoModal: false,          // 是否展示更新图片弹窗
+                chosenPhoto: null,                      // 当前选中图片信息
             };
         },
         methods: {
             // 自定义上传事件
             onUpload (event) {
-                const formData = new FormData()
-                formData.append('file', event.file)
-                formData.append('path', 'article');
-                formData.append('type', 'articleImage');
-                formData.append('save', 'true');
-                formData.append('uploaderId', this.userInfo.userId);
-                api.upload(formData)
-                    .then(result => {
-                        if (result) {
-                            this.message.success({ title: '提示', message: '上传成功' });
-                            this.getUploadFilesInfo();
-                        }
+                this.$refs.photoForm.validate()
+                    .then(() => {
+                        const { fileName, tags } = this.photoForm;
+                        const formData = new FormData()
+                        formData.append('file', event.file)
+                        formData.append('path', 'article');
+                        formData.append('type', 'articleImage');
+                        formData.append('save', 'true');
+                        if (fileName) formData.append('fileName', fileName);
+                        if (tags && tags.length) formData.append('tags', tags.join(','));
+                        api.upload(formData)
+                            .then(result => {
+                                if (result) {
+                                    this.message.success({ title: '提示', message: '上传成功' });
+                                    this.getUploadFilesInfo();
+                                }
+                            })
+                    })
+                    .catch(err => {
+                        this.message.error({ message: '图片信息不正确，请检查' });
                     })
             },
             // 获取当前用户上传的文件信息
             getUploadFilesInfo () {
+                const localUserInfo = this.getLocalUserInfo();
+                if (!localUserInfo) return;
                 const requestParams = {
-                    uploaderId: this.userInfo.userId,
+                    uploaderId: localUserInfo.userId,
                     type: 'articleImage'
                 }
                 api.getUploadFilesInfo(requestParams)
@@ -140,6 +207,10 @@
             resetComponent () {
                 this.activeTab = 'upload';
                 this.uploadFileInfo = [];
+                this.photoForm = {
+                    fieldName: '',
+                    tags: ''
+                }
             },
             // 预览图片
             previewImage (imageIndex) {
@@ -156,6 +227,38 @@
                     this.$message.info('已复制到剪贴板');
                 }
                 document.body.removeChild(transfer);
+            },
+            // 获取用户相册分类字典
+            getAlbumCategory() {
+                const localUserInfo = this.getLocalUserInfo();
+                if (!localUserInfo) return;
+                const { albumDicId } = localUserInfo;
+                const requestParams = {
+                    page: 1,
+                    pageSize: 9999,
+                    dicId: albumDicId
+                }
+                queryDictionaryFieldList(requestParams)
+                    .then(result => {
+                        const { content } = result;
+                        this.tagCategoryList = content;
+                    })
+            },
+            onClose() {
+                this.isShowModal = false;
+            },
+            getLocalUserInfo() {
+                let localUserInfo = localStorage.getItem(storageNameSpace.userInfo);
+                if (!localUserInfo) {
+                    this.message.info({ message: '未获取到用户信息,请重新登录' });
+                    return null;
+                }
+                return JSON.parse(localUserInfo);
+            },
+            // 展示更新图片弹窗
+            showUpdatePhotoModal(photoInfo) {
+                this.chosenPhoto = photoInfo;
+                this.isShowUpdatePhotoModal = true;
             }
         },
         computed: {
@@ -178,6 +281,7 @@
                 this.$emit('update:visible', newValue);
                 // 关闭上传工具时重置工具状态
                 if (!newValue) this.resetComponent();
+                if (newValue) this.getAlbumCategory();
             }
         }
     }
@@ -190,6 +294,9 @@
             padding-top: 0;
         }
         .el-upload {
+            width: 100%;
+        }
+        .el-select {
             width: 100%;
         }
         .upload-image {

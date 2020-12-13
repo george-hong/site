@@ -5,5 +5,6 @@ export default {
     letterOrChinese: /^[\u4e00-\u9fa5a-zA-Z]*$/,      // 中文或字母
     letterOrChineseAndNotStartWithNumber: /^[\u4e00-\u9fa5a-zA-Z]+[\u4e00-\u9fa5a-zA-Z0-9]*$/,      // 中文或字母或数字，但不能以数字开头
     letterChineseNumber: /^[\u4e00-\u9fa5a-zA-Z0-9]*$/,// 中文或字母或数字
+    letterChineseNumberUnderLine: /^[\u4e00-\u9fa5a-zA-Z0-9\_]*$/,// 中文或字母或数字或下划线
     LetterNumberUnderline: /^[a-zA-Z0-9\_]*$/,        // 数字字母下划线
 };

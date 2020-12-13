@@ -64,6 +64,12 @@ export const updateUserImage = params => {
         transformRequest: []
     });
 };
+
+// 更新图片信息
+export const updatePhoto = params => {
+    return request.post('api/upload/update', params);
+}
+
 // 获取用户上传的文件信息
 export const getUploadFilesInfo = params => {
     return request.get('api/upload/getUploadFilesByUser', params);

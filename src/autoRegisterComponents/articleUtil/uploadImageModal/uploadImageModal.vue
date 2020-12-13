@@ -231,7 +231,7 @@
             // 获取用户相册分类字典
             getAlbumCategory() {
                 const localUserInfo = this.getLocalUserInfo();
-                if (!localUserInfo) return;
+                if (!localUserInfo || !(localUserInfo.albumDicId >= 0)) return this.message.info({ message: '您尚未绑定图片分类字典' });
                 const { albumDicId } = localUserInfo;
                 const requestParams = {
                     page: 1,

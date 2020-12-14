@@ -67,7 +67,7 @@
                 >
                     <el-image
                         :src="fileInfo.url"
-                        fit="scale-down"
+                        fit="contain"
                         @click="previewImage(fileIndex)"
                         lazy
                     >

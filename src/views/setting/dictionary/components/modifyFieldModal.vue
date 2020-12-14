@@ -28,7 +28,10 @@
                 prop="fieldCode"
                 :maxLength="fieldMaxLength"
             >
-                <el-input v-model="formData.fieldCode" />
+                <el-input
+                    v-model="formData.fieldCode"
+                    :disabled="!!data"
+                />
             </el-form-item>
             <el-form-item
                 label="额外编码"
@@ -51,12 +54,14 @@
         >
             <el-button
                 @click="isShow = false"
+                :disabled="isLoading"
             >
                 取消
             </el-button>
             <el-button
                 type="primary"
                 @click="validateThenSubmitForm"
+                :loading="isLoading"
             >
                 确认
             </el-button>
@@ -96,6 +101,7 @@
                 remarkMaxLength: 100,
                 isShow: this.visible,           // 是否展示弹窗
                 formData: { ...initFormData },  // 表单信息
+                isLoading: false,               // 是否正在加载
                 rules: {
                     fieldName: [
                         { required: true, message: '请输入字段名称' },
@@ -125,6 +131,7 @@
                     dicId: this.dictionaryInfo.id,
                     ...this.formData
                 });
+                this.isLoading = true;
                 createDictionaryField(requestParams)
                     .then(result => {
                         this.message.success({ message: '字段添加成功' });
@@ -134,18 +141,21 @@
                             type: 'add',
                             result
                         });
-                    });
+                    })
+                    .finally(() => {
+                        this.isLoading = false;
+                    })
             },
             requestUpdateDictionaryField() {
-                const { fieldName, fieldCode, fieldExtraCode, remark } = this.formData
+                const { fieldName, fieldExtraCode, remark } = this.formData
                 const requestParams = this.utils.getExistFieldFromParams({
                     dicId: this.dictionaryInfo.id,
                     fieldName,
-                    fieldCode,
                     fieldExtraCode,
                     remark,
                     id: this.data.id
                 });
+                this.isLoading = true;
                 updateDictionaryField(requestParams)
                     .then(result => {
                         this.message.success({ message: '字段编辑成功' });
@@ -155,6 +165,9 @@
                             type: 'modify',
                             result
                         });
+                    })
+                    .finally(() => {
+                        this.isLoading = false;
                     });
             }
         },

@@ -30,7 +30,7 @@
                 <el-input
                     v-model="formData.sign"
                     :maxLength="fieldMaxLength"
-
+                    :disabled="!!data"
                 />
             </el-form-item>
             <el-form-item
@@ -64,12 +64,14 @@
         >
             <el-button
                 @click="isShow = false"
+                :disabled="isLoading"
             >
                 取消
             </el-button>
             <el-button
                 type="primary"
                 @click="validateThenSubmitForm"
+                :loading="isLoading"
             >
                 确认
             </el-button>
@@ -105,6 +107,7 @@
                 remarkMaxLength: 100,
                 isShow: this.visible,           // 是否展示弹窗
                 formData: { ...initFormData },  // 表单信息
+                isLoading: false,               // 是否正在加载
                 rules: {
                     name: [
                         { required: true, message: '请输入字典名称' },
@@ -133,6 +136,7 @@
                 const requestParams = {
                     ...this.formData
                 };
+                this.isLoading = true;
                 createDictionary(requestParams)
                     .then(result => {
                         this.message.success({ message: '字典新增成功' });
@@ -142,17 +146,20 @@
                             type: 'modify',
                             result
                         });
-                    });
+                    })
+                    .finally(() => {
+                        this.isLoading = false;
+                    })
             },
             requestUpdateDictionary() {
-                const { name, sign, description, isPublic } = this.formData
+                const { name, description, isPublic } = this.formData
                 const requestParams = {
                     name,
-                    sign,
                     description,
                     isPublic,
                     id: this.data.id
                 };
+                this.isLoading = true;
                 updateDictionary(requestParams)
                     .then(result => {
                         this.message.success({ message: '字典编辑成功' });
@@ -162,7 +169,10 @@
                             type: 'add',
                             result
                         });
-                    });
+                    })
+                .finally(() => {
+                    this.isLoading = false;
+                });
             }
         },
         watch: {

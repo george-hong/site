@@ -34,6 +34,10 @@
                 label="字段拓展标识"
             />
             <el-table-column
+                property="weight"
+                label="权重"
+            />
+            <el-table-column
                 property="remark"
                 label="备注"
             />

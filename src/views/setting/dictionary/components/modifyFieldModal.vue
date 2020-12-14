@@ -41,6 +41,13 @@
                 <el-input v-model="formData.fieldExtraCode" />
             </el-form-item>
             <el-form-item
+                label="权重"
+                prop="weight"
+                :maxLength="5"
+            >
+                <el-input v-model="formData.weight" />
+            </el-form-item>
+            <el-form-item
                 label="备注"
                 prop="remark"
                 :maxLength="remarkMaxLength"
@@ -76,6 +83,7 @@
         fieldName: '',                   // 字段名称
         fieldCode: '',                   // 字段编码
         fieldExtraCode: '',              // 字段额外编码
+        weight: 0,                       // 权重
         remark: ''                       // 备注
     };
 
@@ -110,6 +118,10 @@
                     fieldCode: [
                         { required: true, message: '请输入字段编码' },
                         { pattern: this.utils.regExp.LetterNumberUnderline, message: '字段编码只能使用字母、数字、下划线' },
+                    ],
+                    weight: [
+                        { required: true, message: '请输入权重' },
+                        { pattern: this.utils.regExp.natureNumber, message: '权重请输入自然数' },
                     ],
                     fieldExtraCode: [
                         { pattern: this.utils.regExp.LetterNumberUnderline, message: '字段额外编码只能使用字母、数字、下划线' },
@@ -147,11 +159,12 @@
                     })
             },
             requestUpdateDictionaryField() {
-                const { fieldName, fieldExtraCode, remark } = this.formData
+                const { fieldName, fieldExtraCode, weight, remark } = this.formData
                 const requestParams = this.utils.getExistFieldFromParams({
                     dicId: this.dictionaryInfo.id,
                     fieldName,
                     fieldExtraCode,
+                    weight,
                     remark,
                     id: this.data.id
                 });

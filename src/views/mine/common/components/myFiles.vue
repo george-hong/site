@@ -21,8 +21,7 @@
                 <span>时间范围</span>
                 <el-date-picker
                     v-model="timeRange"
-                    type="datetimerange"
-                    :picker-options="pickerOptions"
+                    type="daterange"
                     range-separator="至"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
@@ -57,21 +56,34 @@
                 </el-button>
             </div>
         </div>
-        <div class="album-block">
-<!--            <p class="album-title">标题区域</p>-->
+        <div
+            class="album-block"
+            v-if="fileList.length"
+        >
             <ul class="album-container">
                 <li
                     v-for="(fileInfo, fileIndex) in fileList"
                     :key="fileInfo.id"
                 >
-                    <img
+                    <el-image
                         :src="fileInfo.url"
+                        fit="scale-down"
                         @click="previewImage(fileIndex)"
+                        lazy
                     >
+                        <div
+                            slot="error"
+                            class="image-error flex-content-xy-center"
+                        >
+                            <i class="el-icon-picture-outline"></i>
+                        </div>
+                    </el-image>
                 </li>
             </ul>
         </div>
+        <empty v-show="!fileList.length"/>
         <viewer
+            v-if="fileList.length"
             class="viewer"
             :images="imageList"
             ref="viewer"
@@ -103,33 +115,6 @@
                 tags: [],
                 fileList: [],
                 tagCategoryList: [],                        // 图片分类标签
-                pickerOptions: {
-                    shortcuts: [{
-                        text: '最近一周',
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }, {
-                        text: '最近一个月',
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }, {
-                        text: '最近三个月',
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }]
-                },
             }
         },
         created () {
@@ -143,8 +128,6 @@
                     type: 'articleImage',
                     ...params
                 };
-                console.log('requestParams', requestParams)
-
                 api.getUploadFilesInfo(requestParams)
                     .then(result => {
                         const { content } = result;
@@ -168,7 +151,7 @@
                 const { albumDicId } = localUserInfo;
                 const requestParams = {
                     page: 1,
-                    pageSize: 9999,
+                    pageSize: 99999,
                     dicId: albumDicId
                 }
                 queryDictionaryFieldList(requestParams)
@@ -208,6 +191,13 @@
 
 <style scoped lang="scss">
     .my-files-component {
+        .filter-area {
+            display: flex;
+            flex-wrap: wrap;
+            .filter-item {
+                margin: 0 10px 10px 0;
+            }
+        }
         .album-block {
             .album-title {
                 margin: 10px;
@@ -222,15 +212,16 @@
                     height: 300px;
                     padding-left: 10px;
                     margin-bottom: 10px;
-                    img {
-                        max-width: 100%;
-                        max-height: 100%;
+                    /deep/ .image-error {
+                        height: 200px;
+                        width: 200px;
+                        background: #f5f7fa;
+                        i {
+                            font-size: 22px;
+                        }
                     }
                 }
             }
-        }
-        img {
-            max-width: 100%;
         }
         .viewer {
             display: none;

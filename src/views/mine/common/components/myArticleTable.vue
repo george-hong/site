@@ -136,7 +136,7 @@
 
         },
         watch: {
-            'userInfo.id' (value) {
+            'userInfo.userId' (value) {
                 if (value >= 0) this.getMyArticleList();
             }
         }

@@ -104,7 +104,7 @@
         computed: {
             isAccountOwner () {
                 const localUserInfo = this.$store.state[stateNameSpace.userInfo] || {};
-                return localUserInfo.userId === this.userInfo.id;
+                return localUserInfo.userId === this.userInfo.userId;
             }
         },
         created () {

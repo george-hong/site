@@ -157,7 +157,7 @@
                 if (!this.userBaseInfo.userName) return this.$messge.info('请输入昵称');
                 this.isSubmitting = true;
                 const requestParams = {
-                    userId: this.userInfo.id,
+                    userId: this.userInfo.userId,
                     userName: this.userBaseInfo.userName,
                     introduction: this.userBaseInfo.introduction,
                     albumDicId: this.userBaseInfo.albumDicId,

@@ -75,7 +75,13 @@
                             slot="error"
                             class="image-error flex-content-xy-center"
                         >
-                            <i class="el-icon-picture-outline"></i>
+                            <i class="el-icon-picture-outline" />
+                        </div>
+                        <div
+                            slot="placeholder"
+                            class="image-error flex-content-xy-center"
+                        >
+                            <i class="el-icon-loading" />
                         </div>
                     </el-image>
                 </li>

@@ -11,7 +11,7 @@ module.exports = {
     main: ['@babel/polyfill', path.join(__dirname, '../main.js')]
   },
   output: {
-    path: path.resolve(__dirname, '../../siteServer/app'),
+    path: path.resolve(__dirname, '../../app'),
     filename: 'main-[hash].js'
   },
   resolve: {

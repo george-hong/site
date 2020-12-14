@@ -1,5 +1,62 @@
 <template>
     <div class="my-files-component">
+        <div class="filter-area">
+            <div class="filter-item">
+                <span>筛选条件</span>
+                <el-select
+                    v-model="filterType"
+                >
+                    <el-option
+                        v-for="option in filterOptions"
+                        :label="option.label"
+                        :value="option.value"
+                        :key="option.value"
+                    />
+                </el-select>
+            </div>
+            <div
+                v-show="filterType !== 'tags'"
+                class="filter-item"
+            >
+                <span>时间范围</span>
+                <el-date-picker
+                    v-model="timeRange"
+                    type="datetimerange"
+                    :picker-options="pickerOptions"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    align="right">
+                </el-date-picker>
+            </div>
+            <div
+                v-show="filterType === 'tags'"
+                class="filter-item"
+            >
+                <span>文件标签</span>
+                <el-select
+                    v-model="tags"
+                    multiple
+                    collapse-tags
+                    placeholder="请选择图片标签"
+                >
+                    <el-option
+                        v-for="categoryInfo in tagCategoryList"
+                        :key="categoryInfo.id"
+                        :value="categoryInfo.fieldCode"
+                        :label="categoryInfo.fieldName"
+                    />
+                </el-select>
+            </div>
+            <div>
+                <el-button
+                    type="primary"
+                    @click="filterPhoto"
+                >
+                    过滤
+                </el-button>
+            </div>
+        </div>
         <div class="album-block">
 <!--            <p class="album-title">标题区域</p>-->
             <ul class="album-container">
@@ -26,29 +83,72 @@
 
 <script>
     import dayjs from 'dayjs';
-    import api from '@request';
+    import api, { queryDictionaryFieldList } from '@request';
     import { stateNameSpace } from '@nameSpace/storeNameSpace';
+    import storageNameSpace from '@nameSpace/storageNameSpace';
+
+    const filterOptions = [
+        { label: '上传时间', value: 'createTime' },
+        { label: '更新时间', value: 'updateTime' },
+        { label: '文件标签', value: 'tags' },
+    ];
 
     export default {
         name: 'myFile',
         data () {
             return {
-                fileList: []
+                filterOptions: { ...filterOptions },
+                filterType: filterOptions[0].value,
+                timeRange: [],
+                tags: [],
+                fileList: [],
+                tagCategoryList: [],                        // 图片分类标签
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近一个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
             }
         },
         created () {
+            this.getAlbumCategory();
             this.getFileList();
         },
         methods: {
-            getFileList () {
+            getFileList (params) {
                 const requestParams = {
                     uploaderId: this.userInfo.userId,
-                    type: 'articleImage'
-                }
+                    type: 'articleImage',
+                    ...params
+                };
+                console.log('requestParams', requestParams)
+
                 api.getUploadFilesInfo(requestParams)
                     .then(result => {
                         const { content } = result;
-                        if (content && content.length) this.fileList = content;
+                        if (content) this.fileList = content;
                         this.fileList.forEach(fileInfo => {
                             fileInfo.createTime = dayjs(fileInfo.createTime).format('YYYY-MM-DD HH:mm:ss');
                         });
@@ -61,6 +161,39 @@
             previewImage (imageIndex) {
                 this.$refs.viewer.$viewer.view(imageIndex);
             },
+            // 获取用户相册分类字典
+            getAlbumCategory() {
+                const localUserInfo = this.getLocalUserInfo();
+                if (!localUserInfo || !(localUserInfo.albumDicId >= 0)) return this.message.info({ message: '您尚未绑定图片分类字典' });
+                const { albumDicId } = localUserInfo;
+                const requestParams = {
+                    page: 1,
+                    pageSize: 9999,
+                    dicId: albumDicId
+                }
+                queryDictionaryFieldList(requestParams)
+                    .then(result => {
+                        const { content } = result;
+                        this.tagCategoryList = content;
+                    })
+            },
+            getLocalUserInfo() {
+                let localUserInfo = localStorage.getItem(storageNameSpace.userInfo);
+                if (!localUserInfo) {
+                    this.message.info({ message: '未获取到用户信息,请重新登录' });
+                    return null;
+                }
+                return JSON.parse(localUserInfo);
+            },
+            // 过滤图片
+            filterPhoto() {
+                const { filterType, tags, timeRange } = this;
+                const requestParams = {
+                    filterType,
+                    filterValue: JSON.stringify(filterType === 'tags' ? tags : timeRange.map(time => time ? dayjs(time).format('YYYY-MM-DD HH:mm:ss') : ''))
+                };
+                this.getFileList(requestParams);
+            }
         },
         computed: {
             userInfo () {

@@ -25,7 +25,10 @@
                             {{ dictionaryInfo.name }}
                         </span>
                     </p>
-                    <div class="icon-button">
+                    <div
+                        v-if="dictionaryInfo.userId === localUserId"
+                        class="icon-button"
+                    >
                         <i
                             class="el-icon-edit-outline"
                             @click="startModifyDictionary(dictionaryInfo, dictionaryIndex)"
@@ -64,6 +67,7 @@
 <script>
     import modifyDictionaryModal from './modifyDictionaryModal.vue';
     import { queryDictionaryList, deleteDictionary } from '@request';
+    import storageNameSpace from '../../../../../config/nameSpace/storageNameSpace';
 
     const initPageConfig = {
         page: 1,
@@ -87,7 +91,8 @@
                 isNoMore: false,                            // 是否加载完成
                 timer: null,
                 isLoading: false,                           // 是否正在加载
-                selectedIndex: 0,                           // 选中的字典索引
+                selectedIndex: 0,                           // 选中字典索引
+                localUserId: '',                            // 本地用户id
             };
         },
         methods: {
@@ -150,6 +155,13 @@
             chooseDictionary(dictionary, dictionaryIndex) {
                 this.selectedIndex = dictionaryIndex;
                 this.$emit('choose', dictionary);
+            },
+            // 获取本地用户id
+            getLocalUserId() {
+                const localUserInfo = localStorage.getItem(storageNameSpace.userInfo);
+                if (localUserInfo) {
+                    this.localUserId = JSON.parse(localUserInfo).userId;
+                }
             }
         },
         computed: {
@@ -157,6 +169,7 @@
         },
         created() {
             this.queryDictionaryList(true);
+            this.getLocalUserId();
         },
         beforeDestroy() {
             if (this.timer) {

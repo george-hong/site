@@ -145,7 +145,11 @@
                         this.pageConfig.total = total;
                         this.pageConfig.page = config.page;
                         this.pageConfig.pageSize = config.pageSize;
-                    });
+                    })
+                    .catch(error => {
+                        this.fieldList = [];
+                        this.pageConfig.total = 0;
+                    })
             },
             onPageChange (page) {
                 this.getFieldList({ page });

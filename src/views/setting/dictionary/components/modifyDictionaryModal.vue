@@ -26,9 +26,29 @@
             <el-form-item
                 label="字典标识"
                 prop="sign"
-                :maxLength="fieldMaxLength"
             >
-                <el-input v-model="formData.sign" />
+                <el-input
+                    v-model="formData.sign"
+                    :maxLength="fieldMaxLength"
+
+                />
+            </el-form-item>
+            <el-form-item
+                label="是否公开"
+                prop="isPublic"
+            >
+                <el-select
+                    v-model="formData.isPublic"
+                >
+                    <el-option
+                        label="公开"
+                        value="1"
+                    />
+                    <el-option
+                        label="不公开"
+                        value="0"
+                    />
+                </el-select>
             </el-form-item>
             <el-form-item
                 label="字典描述"
@@ -63,7 +83,8 @@
     const initFormData = {
         name: '',                   // 字典名称
         sign: '',                   // 字典标识
-        description: ''             // 字典描述
+        description: '',            // 字典描述
+        isPublic: '1',              // 是否公开
     };
 
     export default {
@@ -93,6 +114,9 @@
                         { required: true, message: '请输入字典标识' },
                         { pattern: this.utils.regExp.LetterNumberUnderline, message: '字典标识只能使用字母、数字、下划线' },
                     ],
+                    isPublic: [
+                        { required: true, message: '请选择是否公开' },
+                    ]
                 },
             }
         },
@@ -121,13 +145,14 @@
                     });
             },
             requestUpdateDictionary() {
-                const { name, sign, description } = this.formData
-                const requestParams = this.utils.getExistFieldFromParams({
+                const { name, sign, description, isPublic } = this.formData
+                const requestParams = {
                     name,
                     sign,
                     description,
+                    isPublic,
                     id: this.data.id
-                });
+                };
                 updateDictionary(requestParams)
                     .then(result => {
                         this.message.success({ message: '字典编辑成功' });
@@ -166,6 +191,9 @@
         }
         .modify-dictionary-form {
             padding-right: 5px;
+        }
+        .el-select {
+            width: 100%;
         }
     }
 </style>

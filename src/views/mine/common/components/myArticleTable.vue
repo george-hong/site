@@ -86,7 +86,7 @@
                 const params = {
                     page,
                     pageSize,
-                    authorId: this.userInfo.id
+                    authorId: this.userInfo.userId
                 };
                 getArticleList(params)
                     .then(result => {

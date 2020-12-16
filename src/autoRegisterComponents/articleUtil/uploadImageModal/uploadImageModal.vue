@@ -66,6 +66,10 @@
                 label="查看图片"
                 name="review"
             >
+                <filter-file-form
+                    @init="changeFilterCondition"
+                    @change="changeConditionThenRefreshFileList"
+                />
                 <div class="file-list-container">
                     <ul
                         class="file-list"
@@ -162,6 +166,7 @@
                 tagCategoryList: [],                    // 图片分类
                 isShowUpdatePhotoModal: false,          // 是否展示更新图片弹窗
                 chosenPhoto: null,                      // 当前选中图片信息
+                filterFileCondition: {},                // 过滤图片参数
             };
         },
         methods: {
@@ -195,12 +200,13 @@
                 if (!localUserInfo) return;
                 const requestParams = {
                     uploaderId: localUserInfo.userId,
-                    type: 'articleImage'
-                }
+                    type: 'articleImage',
+                    ...this.filterFileCondition
+                };
                 api.getUploadFilesInfo(requestParams)
                     .then(result => {
                         const { content } = result;
-                        if (content && content.length) this.uploadFileInfo = content;
+                        if (content) this.uploadFileInfo = content;
                     })
             },
             // 重置工具状态
@@ -259,6 +265,13 @@
             showUpdatePhotoModal(photoInfo) {
                 this.chosenPhoto = photoInfo;
                 this.isShowUpdatePhotoModal = true;
+            },
+            changeFilterCondition(condition) {
+                this.filterFileCondition = condition;
+            },
+            changeConditionThenRefreshFileList(condition) {
+                this.changeFilterCondition(condition);
+                this.getUploadFilesInfo();
             }
         },
         computed: {
@@ -289,6 +302,7 @@
 
 <style scope lang="scss">
     .upload-image-modal-component {
+        min-width: 375px;
         max-width: 550px;
         .el-dialog__body {
             padding-top: 0;

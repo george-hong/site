@@ -9,6 +9,22 @@
             <el-form-item label="文章标题" prop="title">
                 <el-input v-model="form.title"></el-input>
             </el-form-item>
+            <el-form-item label="文章分类" prop="category">
+                <el-select
+                    v-model="form.category"
+                    placeholder="请选择文章分类"
+                    collapse-tagsnpm
+                    multiple
+                >
+                    <el-option
+                        v-for="categoryOption in articleCategoryOptions"
+                        :key="categoryOption.id"
+                        :value="categoryOption.fieldCode"
+                    >
+                        {{ categoryOption.fieldName }}
+                    </el-option>
+                </el-select>
+            </el-form-item>
         </el-form>
         <p class="content-title">文章内容</p>
         <mavon-editor
@@ -30,7 +46,7 @@
 <script>
     import { mavonEditor } from "mavon-editor";
     import { stateNameSpace } from '@nameSpace/storeNameSpace';
-    import { editArticle, queryArticle } from '@request';
+    import { editArticle, queryArticle, queryDictionaryFieldList } from '@request';
     import "mavon-editor/dist/css/index.css";
     export default {
         components: {
@@ -42,8 +58,10 @@
                 isSubmitting: false, // 是否正在提交
                 isSubmitted: false,  // 是否提交完成
                 content: '',
+                articleCategoryOptions: [],    // 文章分类选项
                 form: {
-                    title: '',
+                    title: '',       // 文章标题
+                    category: '',    // 文章分类
                 },
                 rules: {
                     title: [
@@ -65,6 +83,7 @@
                     this.isSubmitting = true;
                     const requestParams = {
                         title: this.form.title,
+                        category: this.form.category.join(','),
                         content: this.content,
                         author: userInfo.userName
                     };
@@ -121,10 +140,23 @@
                 }
                 this.content = content;
                 this.form.title = title;
+            },
+            // 获取文章分类字典
+            getArticleCategory() {
+                const requestParams = {
+                    page: 1,
+                    pageSize: 99999,
+                    dicId: 2,       // 文章分类固定id
+                };
+                queryDictionaryFieldList(requestParams)
+                    .then(result => {
+                        this.articleCategoryOptions = result.content;
+                    });
             }
         },
         created() {
             this.getArticleInfo();
+            this.getArticleCategory();
         },
         computed: {
             userInfo () {

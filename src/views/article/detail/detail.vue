@@ -1,6 +1,10 @@
 <template>
     <div class="w article-detail">
         <h2 class="article-title">{{articleDetail.title}}</h2>
+        <p v-if="articleCategory">
+            <span>文章分类:</span>
+            <span>{{ articleCategory }}</span>
+        </p>
         <p>
             <span>{{articleDetail.author}}</span>
             <span>发布于:</span>
@@ -17,7 +21,7 @@
 </template>
 
 <script>
-    import request from '@request';
+    import request, { queryDictionaryFieldList } from '@request';
     import format from '@format';
     import dayjs from 'dayjs';
     import { mavonEditor } from "mavon-editor";
@@ -30,11 +34,13 @@
         data() {
             return {
                 pageState: '',
+                articleCategoryOptions: [],     // 文章分类选项
                 articleDetail: {
                     title: '',
                     content: '',
                     author: '',
                     createTimeString: '',
+                    category: ''
                 }
             };
         },
@@ -56,10 +62,34 @@
                     .catch(err => {
                         this.pageState = 'err';
                     });
+            },
+            getArticleCategory() {
+                const requestParams = {
+                    page: 1,
+                    pageSize: 99999,
+                    dicId: 2,       // 文章分类固定id
+                };
+                queryDictionaryFieldList(requestParams)
+                    .then(result => {
+                        this.articleCategoryOptions = result.content;
+                    });
+            }
+        },
+        computed: {
+            articleCategory() {
+                const { articleCategoryOptions, articleDetail: { category } } = this;
+                if (!articleCategoryOptions.length || !category) return;
+                let str = ''
+                category.split(',').forEach(categoryKey => {
+                    const matchItem = articleCategoryOptions.find(option => option.fieldCode === categoryKey);
+                    if (matchItem) str += matchItem.fieldName;
+                });
+                return str;
             }
         },
         created() {
             this.getArticleDetail();
+            this.getArticleCategory();
         }
     }
 </script>

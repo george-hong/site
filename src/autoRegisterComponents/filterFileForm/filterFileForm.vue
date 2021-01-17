@@ -94,7 +94,7 @@
                     page: 1,
                     pageSize: 99999,
                     dicId: albumDicId
-                }
+                };
                 queryDictionaryFieldList(requestParams)
                     .then(result => {
                         const { content } = result;

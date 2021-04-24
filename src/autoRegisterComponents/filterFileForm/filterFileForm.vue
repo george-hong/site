@@ -26,6 +26,7 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 align="right"
+                :picker-options="pickerOptions"
             />
         </div>
         <div
@@ -82,6 +83,48 @@
                 timeRange: [startTime, new Date()],
                 tagCategoryList: [],                        // 图片分类标签
                 tags: [],
+                pickerOptions: {
+                    disabledDate(date) {
+                        return dayjs().isBefore(date)
+                    },
+                    shortcuts: [
+                        {
+                            text: '最近一周',
+                            onClick:() => {
+                                const beforeTime = dayjs().subtract(7, 'day');
+                                this.timeRange = [beforeTime, new Date()];
+                            }
+                        },
+                        {
+                            text: '最近一个月',
+                            onClick:() => {
+                                const beforeTime = dayjs().subtract(1, 'month');
+                                this.timeRange = [beforeTime, new Date()];
+                            }
+                        },
+                        {
+                            text: '最近三个月',
+                            onClick:() => {
+                                const beforeTime = dayjs().subtract(3, 'month');
+                                this.timeRange = [beforeTime, new Date()];
+                            }
+                        },
+                        {
+                            text: '最近半年',
+                            onClick:() => {
+                                const beforeTime = dayjs().subtract(6, 'month');
+                                this.timeRange = [beforeTime, new Date()];
+                            }
+                        },
+                        {
+                            text: '最近一年',
+                            onClick:() => {
+                                const beforeTime = dayjs().subtract(1, 'year');
+                                this.timeRange = [beforeTime, new Date()];
+                            }
+                        }
+                    ]
+                }
             }
         },
         methods: {

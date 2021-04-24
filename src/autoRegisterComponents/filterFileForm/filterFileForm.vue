@@ -144,7 +144,7 @@
         .filter-item {
             display: flex;
             align-items: center;
-            margin: 0 10px 10px 0;
+            margin: 0 10px 10px 20px;
             span {
                 display: block;
                 width: 70px;
